@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kover Interaktif FIVES</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Floating particles background */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Main content */
+        .content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Title */
+        .title {
+            font-size: 4rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+            margin-bottom: 3rem;
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+            to {
+                text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        /* Icon container */
+        .icons-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 4rem;
+            flex-wrap: wrap;
+        }
+
+        /* Individual icons */
+        .icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .icon:hover {
+            transform: translateY(-10px) scale(1.1);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .icon:active {
+            transform: translateY(-5px) scale(1.05);
+        }
+
+        /* Individual icon colors */
+        .icon:nth-child(1) { color: #ff6b6b; }
+        .icon:nth-child(2) { color: #4ecdc4; }
+        .icon:nth-child(3) { color: #45b7d1; }
+        .icon:nth-child(4) { color: #f9ca24; }
+        .icon:nth-child(5) { color: #6c5ce7; }
+
+        /* Mascot container */
+        .mascot-container {
+            position: relative;
+            margin-top: 2rem;
+        }
+
+        .mascot {
+            width: 200px;
+            height: 300px;
+            position: relative;
+            animation: mascotBounce 2s ease-in-out infinite;
+        }
+
+        @keyframes mascotBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Mascot body parts */
+        .head {
+            width: 80px;
+            height: 80px;
+            background: #fdbcb4;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+        }
+
+        .hair {
+            width: 90px;
+            height: 40px;
+            background: #333;
+            border-radius: 50% 50% 0 0;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .eyes {
+            position: absolute;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+
+        .eye {
+            width: 12px;
+            height: 12px;
+            background: #333;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .eye::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+        }
+
+        .smile {
+            width: 30px;
+            height: 15px;
+            border: 3px solid #333;
+            border-top: none;
+            border-radius: 0 0 30px 30px;
+            position: absolute;
+            top: 45px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .body {
+            width: 100px;
+            height: 120px;
+            background: white;
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px 10px 0 0;
+            z-index: 2;
+        }
+
+        .collar {
+            width: 80px;
+            height: 20px;
+            background: #ff0000;
+            position: absolute;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            z-index: 3;
+        }
+
+        .tie {
+            width: 15px;
+            height: 40px;
+            background: #ff0000;
+            position: absolute;
+            top: 85px;
+            left: 50%;
+            transform: translateX(-50%);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            z-index: 3;
+        }
+
+        .pants {
+            width: 90px;
+            height: 80px;
+            background: #ff0000;
+            position: absolute;
+            top: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0 0 10px 10px;
+            z-index: 1;
+        }
+
+        .arms {
+            position: absolute;
+            top: 90px;
+            width: 100%;
+            height: 80px;
+        }
+
+        .arm {
+            width: 20px;
+            height: 70px;
+            background: white;
+            position: absolute;
+            border-radius: 10px;
+        }
+
+        .arm.left {
+            left: 15px;
+            transform: rotate(-20deg);
+        }
+
+        .arm.right {
+            right: 15px;
+            transform: rotate(20deg);
+        }
+
+        .legs {
+            position: absolute;
+            top: 250px;
+            width: 100%;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .leg {
+            width: 20px;
+            height: 40px;
+            background: #333;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .shoes {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .shoe {
+            width: 30px;
+            height: 15px;
+            background: #333;
+            border-radius: 50% 50% 0 0;
+        }
+
+        /* Interactive message */
+        .message {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            color: #333;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .icons-container {
+                gap: 1rem;
+            }
+            
+            .icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+            
+            .mascot {
+                width: 150px;
+                height: 225px;
+                transform: scale(0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Floating particles -->
+        <div class="particles" id="particles"></div>
+
+        <!-- Main content -->
+        <div class="content">
+            <h1 class="title">FIVES</h1>
+            
+            <!-- Interactive icons -->
+            <div class="icons-container">
+                <div class="icon" data-letter="F">F</div>
+                <div class="icon" data-letter="I">I</div>
+                <div class="icon" data-letter="V">V</div>
+                <div class="icon" data-letter="E">E</div>
+                <div class="icon" data-letter="S">S</div>
+            </div>
+
+            <!-- Mascot -->
+            <div class="mascot-container">
+                <div class="mascot">
+                    <div class="head">
+                        <div class="hair"></div>
+                        <div class="eyes">
+                            <div class="eye"></div>
+                            <div class="eye"></div>
+                        </div>
+                        <div class="smile"></div>
+                    </div>
+                    <div class="collar"></div>
+                    <div class="tie"></div>
+                    <div class="body">
+                        <div class="arms">
+                            <div class="arm left"></div>
+                            <div class="arm right"></div>
+                        </div>
+                    </div>
+                    <div class="pants"></div>
+                    <div class="legs">
+                        <div class="leg"></div>
+                        <div class="leg"></div>
+                    </div>
+                    <div class="shoes">
+                        <div class="shoe"></div>
+                        <div class="shoe"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive message -->
+            <div class="message" id="message">Klik ikon untuk melihat keajaiban!</div>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random size
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Random position
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Random animation delay
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Icon interactions
+        const icons = document.querySelectorAll('.icon');
+        const message = document.getElementById('message');
+        const messages = {
+            'F': 'Fun - Keseruan dalam belajar!',
+            'I': 'Inovatif - Ide-ide cemerlang!',
+            'V': 'Visioner - Melangkah ke masa depan!',
+            'E': 'Enerjik - Semangat yang tak pernah padam!',
+            'S': 'Sukses - Meraih impian bersama!'
+        };
+
+        icons.forEach(icon => {
+            icon.addEventListener('click', function() {
+                const letter = this.getAttribute('data-letter');
+                message.textContent = messages[letter];
+                message.classList.add('show');
+                
+                // Create ripple effect
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 10);
+                
+                // Hide message after 3 seconds
+                setTimeout(() => {
+                    message.classList.remove('show');
+                }, 3000);
+            });
+
+            // Add hover sound effect (visual feedback)
+            icon.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.1) rotate(5deg)';
+            });
+
+            icon.addEventListener('mouseleave', function() {
+                this.style.transform = '';
+            });
+        });
+
+        // Initialize particles
+        createParticles();
+
+        // Add some sparkle effects on mascot click
+        const mascot = document.querySelector('.mascot');
+        mascot.addEventListener('click', function() {
+            // Create temporary sparkles
+            for (let i = 0; i < 10; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.style.position = 'absolute';
+                sparkle.style.width = '10px';
+                sparkle.style.height = '10px';
+                sparkle.style.background = '#ffd700';
+                sparkle.style.borderRadius = '50%';
+                sparkle.style.pointerEvents = 'none';
+                sparkle.style.animation = 'sparkle 1s ease-out forwards';
+                
+                const rect = this.getBoundingClientRect();
+                sparkle.style.left = rect.left + rect.width / 2 + 'px';
+                sparkle.style.top = rect.top + rect.height / 2 + 'px';
+                
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 1000);
+            }
+        });
+
+        // Add sparkle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes sparkle {
+                0% {
+                    transform: translate(0, 0) scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px) scale(1);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
