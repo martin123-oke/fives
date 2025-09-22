@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air di Langit Biru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, Arial, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: #2E86AB;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .story-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(145deg, #f0f8ff, #e6f3ff);
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .interactive-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .interactive-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .interactive-item:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .interactive-item img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+            filter: brightness(0) invert(1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #ffffff, #f8f9fa);
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .fact-title {
+            color: #2E86AB;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .fact-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .audio-controls {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8e6cf 0%, #dcedc8 100%);
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .title { font-size: 2em; }
+            .container { padding: 20px; }
+            .modal-content { width: 95%; margin: 5% auto; }
+            .interactive-area { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title floating">🌊 Petualangan Tetes Air di Langit Biru 🌤️</h1>
+            <p style="font-size: 1.2em; color: #666;">Cerita Interaktif tentang Siklus Air</p>
+        </div>
+
+        <div class="audio-controls">
+            <h3>🎧 Audio Narasi</h3>
+            <div class="controls">
+                <button class="btn" onclick="playAudio()">▶️ Putar</button>
+                <button class="btn" onclick="pauseAudio()">⏸️ Jeda</button>
+                <button class="btn" onclick="stopAudio()">⏹️ Stop</button>
+            </div>
+            <div class="progress-bar">
+                <div class="progress" id="progressBar"></div>
+            </div>
+            <p id="audioStatus">Siap untuk diputar</p>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama <span class="highlight">Dito</span>. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang <span class="highlight">siklus air</span>. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?
+            </div>
+            <div class="story-text">
+                "Aku ingin melihat sendiri!" gumam Dito. Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau. Di sampingnya, ada ribuan tetes air lain yang juga sedang berpetualang.
+            </div>
+        </div>
+
+        <div class="interactive-area">
+            <div class="interactive-item floating" onclick="showFact('evaporation')">
+                <div style="font-size: 3em;">☀️</div>
+                <h3>Penguapan</h3>
+                <p>Klik untuk belajar!</p>
+            </div>
+            <div class="interactive-item floating" onclick="showFact('condensation')">
+                <div style="font-size: 3em;">☁️</div>
+                <h3>Kondensasi</h3>
+                <p>Klik untuk belajar!</p>
+            </div>
+            <div class="interactive-item floating" onclick="showFact('precipitation')">
+                <div style="font-size: 3em;">🌧️</div>
+                <h3>Presipitasi</h3>
+                <p>Klik untuk belajar!</p>
+            </div>
+            <div class="interactive-item floating" onclick="showFact('collection')">
+                <div style="font-size: 3em;">🏞️</div>
+                <h3>Pengumpulan</h3>
+                <p>Klik untuk belajar!</p>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Matahari mulai bersinar. Panasnya terasa hangat. Dito merasakan tubuhnya semakin ringan dan melayang ke atas. <span class="highlight">"Wah, kita menguap!"</span> seru Dito. Ia melihat tetes air di sekitarnya juga ikut naik. Mereka bergerak semakin tinggi, melewati gedung-gedung dan pepohonan.
+            </div>
+            <div class="story-text">
+                Saat di atas, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul. Mereka saling menempel, membentuk gumpalan-gumpalan putih yang lembut. <span class="highlight">"Ini namanya kondensasi!"</span> Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi awan yang besar.
+            </div>
+        </div>
+
+        <div class="interactive-area">
+            <div class="interactive-item floating" onclick="showFact('pollution')">
+                <div style="font-size: 3em;">🏭</div>
+                <h3>Polusi Air</h3>
+                <p>Klik untuk belajar!</p>
+            </div>
+            <div class="interactive-item floating" onclick="showFact('conservation')">
+                <div style="font-size: 3em;">♻️</div>
+                <h3>Konservasi</h3>
+                <p>Klik untuk belajar!</p>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Awan itu terus melayang, mengikuti angin. Lalu, Dito merasa tubuhnya semakin berat. Ia tidak bisa lagi menahan diri. "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya jatuh ke bawah. <span class="highlight">"Ini presipitasi atau hujan!"</span> Dito berteriak senang. Ia jatuh di sebuah taman, lalu mengalir ke sungai.
+            </div>
+            <div class="story-text">
+                Di dalam sungai, Dito melihat pemandangan yang menyedihkan. Air sungai kotor dan banyak sampah plastik yang mengapung. Ia melihat sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat. Dito berpikir kritis. Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya?
+            </div>
+            <div class="story-text">
+                Dito terbangun. Ia menatap tetesan air hujan di jendela kamarnya. Ia kini mengerti. <span class="highlight">Siklus air adalah perjalanan yang luar biasa, tetapi juga rentan.</span> Setiap tetes air yang jatuh ke bumi akan kembali menguap. Jika kita membuang sampah sembarangan dan membuat sungai kotor, kita merusak seluruh siklus.
+            </div>
+            <div class="story-text">
+                Dito lalu mengambil sebuah kantong plastik besar. Ia mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. <span class="highlight">"Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan,"</span> kata Dito. <span class="highlight">"Kita harus menjaga air tetap bersih agar bumi kita tetap sehat."</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk fakta -->
+    <div id="factModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeFact()">&times;</span>
+            <h2 class="fact-title" id="factTitle"></h2>
+            <div class="fact-text" id="factContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let audioContext;
+        let isPlaying = false;
+        let currentTime = 0;
+        let totalTime = 120; // Durasi audio simulasi (2 menit)
+        let audioInterval;
+
+        // Simulasi audio narasi dengan Text-to-Speech
+        function playAudio() {
+            if ('speechSynthesis' in window) {
+                if (isPlaying) return;
+                
+                isPlaying = true;
+                document.getElementById('audioStatus').textContent = 'Sedang memutar...';
+                
+                // Ambil teks cerita untuk dibacakan
+                const storyText = `
+                    Petualangan Tetes Air di Langit Biru.
+                    Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama Dito. 
+                    Ia sangat suka membaca dan bertanya tentang banyak hal. 
+                    Suatu hari, guru sainsnya menjelaskan tentang siklus air. 
+                    Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?
+                    Aku ingin melihat sendiri! gumam Dito. 
+                    Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau.
+                `;
+
+                const utterance = new SpeechSynthesisUtterance(storyText);
+                utterance.lang = 'id-ID';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.1;
+                
+                utterance.onend = function() {
+                    stopAudio();
+                };
+
+                speechSynthesis.speak(utterance);
+                
+                // Simulasi progress bar
+                audioInterval = setInterval(updateProgress, 1000);
+            } else {
+                alert('Browser Anda tidak mendukung Text-to-Speech. Silakan gunakan browser yang lebih modern.');
+            }
+        }
+
+        function pauseAudio() {
+            if (speechSynthesis.speaking && !speechSynthesis.paused) {
+                speechSynthesis.pause();
+                isPlaying = false;
+                document.getElementById('audioStatus').textContent = 'Dijeda';
+                clearInterval(audioInterval);
+            } else if (speechSynthesis.paused) {
+                speechSynthesis.resume();
+                isPlaying = true;
+                document.getElementById('audioStatus').textContent = 'Sedang memutar...';
+                audioInterval = setInterval(updateProgress, 1000);
+            }
+        }
+
+        function stopAudio() {
+            speechSynthesis.cancel();
+            isPlaying = false;
+            currentTime = 0;
+            document.getElementById('audioStatus').textContent = 'Siap untuk diputar';
+            document.getElementById('progressBar').style.width = '0%';
+            clearInterval(audioInterval);
+        }
+
+        function updateProgress() {
+            if (isPlaying && currentTime < totalTime) {
+                currentTime++;
+                const progress = (currentTime / totalTime) * 100;
+                document.getElementById('progressBar').style.width = progress + '%';
+            }
+        }
+
+        const facts = {
+            evaporation: {
+                title: "🌞 Penguapan (Evaporasi)",
+                content: `
+                    <p><strong>Apa itu penguapan?</strong></p>
+                    <p>Penguapan adalah proses perubahan air dari bentuk cair menjadi uap air karena panas matahari. Ini adalah langkah pertama dalam siklus air!</p>
+                    <p><strong>Fakta Menarik:</strong></p>
+                    <p>• Setiap hari, matahari menguapkan sekitar 1.000 miliar ton air dari lautan!</p>
+                    <p>• Tanaman juga melepaskan uap air melalui daunnya (transpirasi)</p>
+                    <p>• Air menguap lebih cepat saat cuaca panas dan berangin</p>
+                `
+            },
+            condensation: {
+                title: "☁️ Kondensasi",
+                content: `
+                    <p><strong>Apa itu kondensasi?</strong></p>
+                    <p>Kondensasi terjadi ketika uap air di udara berubah kembali menjadi tetesan air kecil karena suhu dingin di ketinggian.</p>
+                    <p><strong>Fakta Menarik:</strong></p>
+                    <p>• Awan terbentuk dari miliaran tetesan air yang sangat kecil</p>
+                    <p>• Satu awan dapat mengandung hingga 1 juta ton air!</p>
+                    <p>• Embun pagi adalah contoh kondensasi yang terjadi di permukaan bumi</p>
+                `
+            },
+            precipitation: {
+                title: "🌧️ Presipitasi (Hujan)",
+                content: `
+                    <p><strong>Apa itu presipitasi?</strong></p>
+                    <p>Presipitasi adalah jatuhnya air dari awan ke bumi dalam berbagai bentuk: hujan, salju, atau es.</p>
+                    <p><strong>Fakta Menarik:</strong></p>
+                    <p>• Tetesan hujan jatuh dengan kecepatan 20-30 km/jam</p>
+                    <p>• Hujan terberat yang pernah tercatat: 1.825 mm dalam 24 jam!</p>
+                    <p>• Bentuk presipitasi bergantung pada suhu udara</p>
+                `
+            },
+            collection: {
+                title: "🏞️ Pengumpulan Air",
+                content: `
+                    <p><strong>Apa itu pengumpulan air?</strong></p>
+                    <p>Air hujan mengalir dan berkumpul di sungai, danau, dan lautan untuk memulai siklus air lagi.</p>
+                    <p><strong>Fakta Menarik:</strong></p>
+                    <p>• 97% air bumi berada di lautan</p>
+                    <p>• Air tanah menyediakan air minum untuk 2 miliar orang</p>
+                    <p>• Sungai Amazon mengalirkan 20% dari semua air tawar dunia ke laut</p>
+                `
+            },
+            pollution: {
+                title: "🏭 Polusi Air",
+                content: `
+                    <p><strong>Bagaimana polusi mempengaruhi siklus air?</strong></p>
+                    <p>Pencemaran air merusak kualitas air dan mengganggu siklus air alami, membahayakan kehidupan di bumi.</p>
+                    <p><strong>Dampak Polusi:</strong></p>
+                    <p>• Air kotor yang menguap mencemari udara</p>
+                    <p>• Sampah plastik mencemari lautan dan sungai</p>
+                    <p>• 2 miliar orang tidak memiliki akses air bersih</p>
+                `
+            },
+            conservation: {
+                title: "♻️ Konservasi Air",
+                content: `
+                    <p><strong>Bagaimana kita bisa menjaga air?</strong></p>
+                    <p>Setiap orang bisa membantu menjaga siklus air tetap bersih dan sehat!</p>
+                    <p><strong>Cara Sederhana:</strong></p>
+                    <p>• Jangan buang sampah ke sungai</p>
+                    <p>• Hemat penggunaan air</p>
+                    <p>• Gunakan produk ramah lingkungan</p>
+                    <p>• Tanam pohon untuk menjaga kualitas air tanah</p>
+                `
+            }
+        };
+
+        function showFact(factKey) {
+            const fact = facts[factKey];
+            document.getElementById('factTitle').textContent = fact.title;
+            document.getElementById('factContent').innerHTML = fact.content;
+            document.getElementById('factModal').style.display = 'block';
+        }
+
+        function closeFact() {
+            document.getElementById('factModal').style.display = 'none';
+        }
+
+        // Tutup modal saat klik di luar area modal
+        window.onclick = function(event) {
+            const modal = document.getElementById('factModal');
+            if (event.target === modal) {
+                closeFact();
+            }
+        }
+
+        // Animasi elemen saat scroll
+        function animateOnScroll() {
+            const elements = document.querySelectorAll('.interactive-item');
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Inisialisasi
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', function() {
+            // Tambahkan efek masuk halus
+            document.body.style.opacity = '0';
+            setTimeout(() => {
+                document.body.style.transition = 'opacity 1s ease';
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
