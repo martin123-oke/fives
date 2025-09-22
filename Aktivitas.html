@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air di Langit Biru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #F0E68C 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #4A90E2, #50C9C3);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .story-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 3px solid #e3f2fd;
+        }
+        
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            text-align: justify;
+        }
+        
+        .activity-title {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2em;
+            margin: 30px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .instruction {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #856404;
+        }
+        
+        .game-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .drag-items {
+            background: #e8f4fd;
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px solid #81c784;
+        }
+        
+        .drag-items h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+        
+        .drop-zone {
+            background: #fff8e1;
+            border-radius: 15px;
+            padding: 20px;
+            border: 3px dashed #ff9800;
+            min-height: 400px;
+        }
+        
+        .drop-zone h3 {
+            color: #f57c00;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.3em;
+        }
+        
+        .fact-item {
+            background: linear-gradient(45deg, #42a5f5, #26c6da);
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 25px;
+            cursor: grab;
+            user-select: none;
+            text-align: center;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .fact-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .fact-item.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+        
+        .dropped-item {
+            background: linear-gradient(45deg, #66bb6a, #26a69a) !important;
+            border: 2px solid #4caf50 !important;
+            margin: 8px 0;
+            animation: dropSuccess 0.5s ease;
+        }
+        
+        @keyframes dropSuccess {
+            0% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .drop-zone.drag-over {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            border-style: solid;
+        }
+        
+        .completion-message {
+            background: linear-gradient(45deg, #4caf50, #8bc34a);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            margin-top: 20px;
+            display: none;
+            animation: celebration 0.8s ease;
+        }
+        
+        @keyframes celebration {
+            0% { transform: scale(0.8); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .reset-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .score {
+            background: #e1f5fe;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #0277bd;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌧️ Petualangan Tetes Air di Langit Biru 🌤️</h1>
+            <p>Aktivitas Pembelajaran Siklus Air yang Menyenangkan</p>
+        </div>
+        
+        <div class="content">
+            <div class="story-section">
+                <div class="story-text">
+                    Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama Dito. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang siklus air. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan? "Aku ingin melihat sendiri!" gumam Dito.
+                    <br><br>
+                    Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau. Di sampingnya, ada ribuan tetes air lain yang juga sedang berpetualang. Matahari mulai bersinar. Panasnya terasa hangat. Dito merasakan tubuhnya semakin ringan dan melayang ke atas. "Wah, kita menguap!" seru Dito. Ia melihat tetes air di sekitarnya juga ikut naik.
+                    <br><br>
+                    Saat di atas, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul. Mereka saling menempel, membentuk gumpalan-gumpalan putih yang lembut. "Ini namanya kondensasi!" Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi awan yang besar.
+                    <br><br>
+                    Lalu, Dito merasa tubuhnya semakin berat. "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya jatuh ke bawah. "Ini presipitasi atau hujan!" Dito berteriak senang. Ia jatuh di sebuah taman, lalu mengalir ke sungai.
+                    <br><br>
+                    Di dalam sungai, Dito melihat pemandangan yang menyedihkan. Air sungai kotor dan banyak sampah plastik yang mengapung. Ia melihat sampah-sampah itu menyumbat aliran air. Dito berpikir kritis. Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya?
+                    <br><br>
+                    Dito terbangun. Ia kini mengerti. Siklus air adalah perjalangan yang luar biasa, tetapi juga rentan. Dito lalu mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. "Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan," kata Dito.
+                </div>
+            </div>
+            
+            <h2 class="activity-title">🎯 Temukan Fakta Utama!</h2>
+            
+            <div class="instruction">
+                🌟 Seret dan lepaskan fakta-fakta utama dari cerita ke dalam kotak di sebelah kanan! 🌟
+            </div>
+            
+            <div class="score">
+                Fakta yang berhasil ditemukan: <span id="scoreCount">0</span> / <span id="totalFacts">6</span>
+            </div>
+            
+            <div class="game-area">
+                <div class="drag-items">
+                    <h3>📚 Pilihan Fakta</h3>
+                    <div id="factsList">
+                        <div class="fact-item" draggable="true">Air menguap karena panas matahari (Evaporasi)</div>
+                        <div class="fact-item" draggable="true">Uap air berubah menjadi awan (Kondensasi)</div>
+                        <div class="fact-item" draggable="true">Dito suka bermain sepak bola</div>
+                        <div class="fact-item" draggable="true">Air jatuh dari awan menjadi hujan (Presipitasi)</div>
+                        <div class="fact-item" draggable="true">Sampah membuat sungai kotor dan tersumbat</div>
+                        <div class="fact-item" draggable="true">Dito punya kucing bernama Mimi</div>
+                        <div class="fact-item" draggable="true">Kita harus menjaga lingkungan agar siklus air tetap bersih</div>
+                        <div class="fact-item" draggable="true">Siklus air terdiri dari evaporasi, kondensasi, dan presipitasi</div>
+                        <div class="fact-item" draggable="true">Guru Dito mengajar matematika</div>
+                    </div>
+                </div>
+                
+                <div class="drop-zone" id="dropZone">
+                    <h3>✨ Fakta Utama Cerita</h3>
+                    <p style="color: #666; text-align: center; margin-top: 20px;">Seret fakta-fakta yang benar ke sini!</p>
+                </div>
+            </div>
+            
+            <button class="reset-btn" onclick="resetGame()">🔄 Reset Permainan</button>
+            
+            <div class="completion-message" id="completionMessage">
+                🎉 Selamat! Kamu berhasil menemukan semua fakta utama! 🎉
+                <br>Kamu sudah memahami cerita siklus air dengan baik!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctFacts = [
+            "Air menguap karena panas matahari (Evaporasi)",
+            "Uap air berubah menjadi awan (Kondensasi)", 
+            "Air jatuh dari awan menjadi hujan (Presipitasi)",
+            "Sampah membuat sungai kotor dan tersumbat",
+            "Kita harus menjaga lingkungan agar siklus air tetap bersih",
+            "Siklus air terdiri dari evaporasi, kondensasi, dan presipitasi"
+        ];
+        
+        let draggedElement = null;
+        let score = 0;
+        const totalFacts = correctFacts.length;
+        
+        // Update score display
+        document.getElementById('totalFacts').textContent = totalFacts;
+        
+        // Add event listeners to draggable items
+        function initializeDragAndDrop() {
+            const factItems = document.querySelectorAll('.fact-item');
+            const dropZone = document.getElementById('dropZone');
+            
+            factItems.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+            
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('dragenter', handleDragEnter);
+            dropZone.addEventListener('dragleave', handleDragLeave);
+            dropZone.addEventListener('drop', handleDrop);
+        }
+        
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        }
+        
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+        
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+        
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+        
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+        
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+            
+            this.classList.remove('drag-over');
+            
+            if (draggedElement !== this) {
+                const factText = draggedElement.textContent;
+                
+                // Check if it's a correct fact
+                if (correctFacts.includes(factText)) {
+                    // Check if already dropped
+                    const existingFacts = Array.from(this.querySelectorAll('.dropped-item'));
+                    const alreadyExists = existingFacts.some(item => item.textContent === factText);
+                    
+                    if (!alreadyExists) {
+                        // Create new element in drop zone
+                        const newElement = draggedElement.cloneNode(true);
+                        newElement.classList.remove('dragging');
+                        newElement.classList.add('dropped-item');
+                        newElement.draggable = false;
+                        
+                        // Add remove functionality
+                        newElement.addEventListener('click', function() {
+                            this.remove();
+                            score--;
+                            updateScore();
+                            // Make original item visible again
+                            draggedElement.style.display = 'block';
+                        });
+                        
+                        this.appendChild(newElement);
+                        
+                        // Hide original item
+                        draggedElement.style.display = 'none';
+                        
+                        score++;
+                        updateScore();
+                        
+                        // Check completion
+                        if (score === totalFacts) {
+                            showCompletionMessage();
+                        }
+                    }
+                } else {
+                    // Wrong answer animation
+                    draggedElement.style.background = 'linear-gradient(45deg, #f44336, #e91e63)';
+                    setTimeout(() => {
+                        draggedElement.style.background = 'linear-gradient(45deg, #42a5f5, #26c6da)';
+                    }, 1000);
+                }
+            }
+            
+            return false;
+        }
+        
+        function updateScore() {
+            document.getElementById('scoreCount').textContent = score;
+        }
+        
+        function showCompletionMessage() {
+            document.getElementById('completionMessage').style.display = 'block';
+        }
+        
+        function resetGame() {
+            // Clear drop zone
+            const dropZone = document.getElementById('dropZone');
+            const droppedItems = dropZone.querySelectorAll('.dropped-item');
+            droppedItems.forEach(item => item.remove());
+            
+            // Show all original items
+            const factItems = document.querySelectorAll('.fact-item');
+            factItems.forEach(item => {
+                item.style.display = 'block';
+                item.style.background = 'linear-gradient(45deg, #42a5f5, #26c6da)';
+            });
+            
+            // Reset score
+            score = 0;
+            updateScore();
+            
+            // Hide completion message
+            document.getElementById('completionMessage').style.display = 'none';
+            
+            // Add instruction back to drop zone
+            dropZone.innerHTML = '<h3>✨ Fakta Utama Cerita</h3><p style="color: #666; text-align: center; margin-top: 20px;">Seret fakta-fakta yang benar ke sini!</p>';
+        }
+        
+        // Initialize the game
+        initializeDragAndDrop();
+    </script>
+</body>
+</html>
