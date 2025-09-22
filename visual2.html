@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual: Petualangan Tetes Air di Langit Biru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 50%, #87CEFA 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4A90E2, #50C9C3, #7EC8E3);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .story-container {
+            padding: 40px;
+        }
+
+        .story-section {
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            border-left: 5px solid #4A90E2;
+            position: relative;
+        }
+
+        .story-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .story-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4A90E2, #50C9C3, #7EC8E3);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .scene-visual {
+            width: 100%;
+            height: 250px;
+            border-radius: 15px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Scene 1: Dito in classroom */
+        .scene1 {
+            background: linear-gradient(135deg, #FFE4B5 0%, #F0E68C 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .classroom {
+            width: 80%;
+            height: 80%;
+            background: #8B4513;
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .student {
+            width: 40px;
+            height: 60px;
+            background: #FFB6C1;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            animation: wonder 3s ease-in-out infinite;
+        }
+
+        .student::before {
+            content: '🤔';
+            position: absolute;
+            top: -30px;
+            left: -10px;
+            font-size: 2em;
+        }
+
+        @keyframes wonder {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Scene 2: Lake with water droplets */
+        .scene2 {
+            background: linear-gradient(135deg, #87CEEB 0%, #4682B4 100%);
+            position: relative;
+        }
+
+        .lake {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(180deg, rgba(70, 130, 180, 0.8) 0%, #4682B4 100%);
+            border-radius: 50% 50% 0 0;
+        }
+
+        .water-droplet {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #87CEEB;
+            border-radius: 50%;
+            animation: ripple 2s ease-in-out infinite;
+        }
+
+        .droplet1 { top: 70%; left: 20%; animation-delay: 0s; }
+        .droplet2 { top: 75%; left: 40%; animation-delay: 0.5s; }
+        .droplet3 { top: 72%; left: 60%; animation-delay: 1s; }
+        .droplet4 { top: 78%; left: 80%; animation-delay: 1.5s; }
+
+        @keyframes ripple {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.7; }
+        }
+
+        /* Scene 3: Evaporation */
+        .scene3 {
+            background: linear-gradient(135deg, #FFE4B5 0%, #87CEEB 100%);
+            position: relative;
+        }
+
+        .sun {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+            border-radius: 50%;
+            animation: sunshine 3s ease-in-out infinite;
+        }
+
+        .sun::before {
+            content: '☀️';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            font-size: 2em;
+        }
+
+        @keyframes sunshine {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(180deg); }
+        }
+
+        .evaporation {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .vapor {
+            width: 6px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            position: absolute;
+            animation: rise 4s ease-in-out infinite;
+        }
+
+        .vapor1 { left: 0; animation-delay: 0s; }
+        .vapor2 { left: 15px; animation-delay: 0.5s; }
+        .vapor3 { left: 30px; animation-delay: 1s; }
+        .vapor4 { left: 45px; animation-delay: 1.5s; }
+
+        @keyframes rise {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-200px); opacity: 0; }
+        }
+
+        /* Scene 4: Cloud formation */
+        .scene4 {
+            background: linear-gradient(135deg, #87CEFA 0%, #B0C4DE 100%);
+            position: relative;
+        }
+
+        .cloud {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 60px;
+            background: #FFFFFF;
+            border-radius: 50px;
+            animation: cloudForm 3s ease-in-out infinite;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: '';
+            position: absolute;
+            background: #FFFFFF;
+            border-radius: 50px;
+        }
+
+        .cloud::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+
+        .cloud::after {
+            width: 60px;
+            height: 40px;
+            top: -15px;
+            right: 15px;
+        }
+
+        @keyframes cloudForm {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+        }
+
+        /* Scene 5: Rain */
+        .scene5 {
+            background: linear-gradient(135deg, #708090 0%, #2F4F4F 100%);
+            position: relative;
+        }
+
+        .rain-cloud {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 50px;
+            background: #696969;
+            border-radius: 40px;
+        }
+
+        .rain-drop {
+            position: absolute;
+            width: 3px;
+            height: 15px;
+            background: #87CEEB;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: fall 2s linear infinite;
+        }
+
+        .rain1 { top: 80px; left: 30%; animation-delay: 0s; }
+        .rain2 { top: 80px; left: 40%; animation-delay: 0.2s; }
+        .rain3 { top: 80px; left: 50%; animation-delay: 0.4s; }
+        .rain4 { top: 80px; left: 60%; animation-delay: 0.6s; }
+        .rain5 { top: 80px; left: 70%; animation-delay: 0.8s; }
+
+        @keyframes fall {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(150px); }
+        }
+
+        /* Scene 6: Polluted river */
+        .scene6 {
+            background: linear-gradient(135deg, #8FBC8F 0%, #228B22 100%);
+            position: relative;
+        }
+
+        .river {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(90deg, #4682B4 0%, #2F4F4F 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .trash {
+            position: absolute;
+            font-size: 1.5em;
+            animation: float-trash 3s ease-in-out infinite;
+        }
+
+        .trash1 { bottom: 15%; left: 20%; }
+        .trash2 { bottom: 20%; left: 50%; animation-delay: 1s; }
+        .trash3 { bottom: 18%; left: 75%; animation-delay: 2s; }
+
+        @keyframes float-trash {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Scene 7: Clean environment */
+        .scene7 {
+            background: linear-gradient(135deg, #98FB98 0%, #00FA9A 100%);
+            position: relative;
+        }
+
+        .clean-river {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 40%;
+            background: linear-gradient(90deg, #87CEEB 0%, #4682B4 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .children {
+            position: absolute;
+            bottom: 45%;
+            left: 30%;
+            font-size: 2em;
+            animation: cleanup 2s ease-in-out infinite;
+        }
+
+        @keyframes cleanup {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 2;
+            color: #2c3e50;
+            text-align: justify;
+            margin-top: 20px;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(45deg, #4A90E2, #50C9C3);
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4A90E2, #50C9C3);
+            transition: width 0.3s ease;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .story-container {
+                padding: 20px;
+            }
+            
+            .scene-visual {
+                height: 200px;
+            }
+            
+            .controls {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🌧️ Petualangan Tetes Air di Langit Biru 🌤️</h1>
+            <p>Cerita Visual Interaktif tentang Siklus Air dan Lingkungan</p>
+        </div>
+
+        <div class="story-container">
+            <!-- Scene 1: Introduction -->
+            <div class="story-section" data-scene="1">
+                <div class="scene-visual scene1">
+                    <div class="classroom">
+                        <div class="student"></div>
+                    </div>
+                </div>
+                <div class="story-text">
+                    Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama <span class="highlight">Dito</span>. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang <span class="highlight">siklus air</span>. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?
+                    <br><br>
+                    "Aku ingin melihat sendiri!" gumam Dito.
+                </div>
+            </div>
+
+            <!-- Scene 2: Dream begins -->
+            <div class="story-section" data-scene="2">
+                <div class="scene-visual scene2">
+                    <div class="lake"></div>
+                    <div class="water-droplet droplet1"></div>
+                    <div class="water-droplet droplet2"></div>
+                    <div class="water-droplet droplet3"></div>
+                    <div class="water-droplet droplet4"></div>
+                </div>
+                <div class="story-text">
+                    Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi <span class="highlight">setetes air di sebuah danau</span>. Di sampingnya, ada ribuan tetes air lain yang juga sedang berpetualang.
+                </div>
+            </div>
+
+            <!-- Scene 3: Evaporation -->
+            <div class="story-section" data-scene="3">
+                <div class="scene-visual scene3">
+                    <div class="sun"></div>
+                    <div class="evaporation">
+                        <div class="vapor vapor1"></div>
+                        <div class="vapor vapor2"></div>
+                        <div class="vapor vapor3"></div>
+                        <div class="vapor vapor4"></div>
+                    </div>
+                </div>
+                <div class="story-text">
+                    Matahari mulai bersinar. Panasnya terasa hangat. Dito merasakan tubuhnya semakin ringan dan melayang ke atas. <span class="highlight">"Wah, kita menguap!"</span> seru Dito. Ia melihat tetes air di sekitarnya juga ikut naik. Mereka bergerak semakin tinggi, melewati gedung-gedung dan pepohonan.
+                </div>
+            </div>
+
+            <!-- Scene 4: Condensation -->
+            <div class="story-section" data-scene="4">
+                <div class="scene-visual scene4">
+                    <div class="cloud"></div>
+                </div>
+                <div class="story-text">
+                    Saat di atas, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul. Mereka saling menempel, membentuk gumpalan-gumpalan putih yang lembut. <span class="highlight">"Ini namanya kondensasi!"</span> Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi awan yang besar.
+                </div>
+            </div>
+
+            <!-- Scene 5: Precipitation -->
+            <div class="story-section" data-scene="5">
+                <div class="scene-visual scene5">
+                    <div class="rain-cloud"></div>
+                    <div class="rain-drop rain1"></div>
+                    <div class="rain-drop rain2"></div>
+                    <div class="rain-drop rain3"></div>
+                    <div class="rain-drop rain4"></div>
+                    <div class="rain-drop rain5"></div>
+                </div>
+                <div class="story-text">
+                    Awan itu terus melayang, mengikuti angin. Lalu, Dito merasa tubuhnya semakin berat. Ia tidak bisa lagi menahan diri. "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya jatuh ke bawah. <span class="highlight">"Ini presipitasi atau hujan!"</span> Dito berteriak senang. Ia jatuh di sebuah taman, lalu mengalir ke sungai.
+                </div>
+            </div>
+
+            <!-- Scene 6: Pollution problem -->
+            <div class="story-section" data-scene="6">
+                <div class="scene-visual scene6">
+                    <div class="river"></div>
+                    <div class="trash trash1">🗑️</div>
+                    <div class="trash trash2">🥤</div>
+                    <div class="trash trash3">🛍️</div>
+                </div>
+                <div class="story-text">
+                    Di dalam sungai, Dito melihat pemandangan yang menyedihkan. <span class="highlight">Air sungai kotor dan banyak sampah plastik yang mengapung</span>. Ia melihat sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat. Dito berpikir kritis. Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya? Air yang menguap akan kotor dan udara bisa jadi tidak sehat.
+                </div>
+            </div>
+
+            <!-- Scene 7: Environmental awareness -->
+            <div class="story-section" data-scene="7">
+                <div class="scene-visual scene7">
+                    <div class="clean-river"></div>
+                    <div class="children">👦👧🧹</div>
+                </div>
+                <div class="story-text">
+                    Dito terbangun. Ia menatap tetesan air hujan di jendela kamarnya. Ia kini mengerti. <span class="highlight">Siklus air adalah perjalanan yang luar biasa, tetapi juga rentan</span>. Setiap tetes air yang jatuh ke bumi akan kembali menguap. Jika kita membuang sampah sembarangan dan membuat sungai kotor, kita merusak seluruh siklus.
+                    <br><br>
+                    Dito lalu mengambil sebuah kantong plastik besar. Ia mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. <span class="highlight">"Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan,"</span> kata Dito. <span class="highlight">"Kita harus menjaga air tetap bersih agar bumi kita tetap sehat."</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-btn" onclick="previousScene()" title="Scene Sebelumnya">⬅️</button>
+        <button class="control-btn" onclick="toggleAutoPlay()" id="playBtn" title="Auto Play">▶️</button>
+        <button class="control-btn" onclick="nextScene()" title="Scene Selanjutnya">➡️</button>
+    </div>
+
+    <script>
+        let currentScene = 0;
+        let isAutoPlay = false;
+        let autoPlayInterval;
+        const totalScenes = document.querySelectorAll('.story-section').length;
+
+        // Initialize the first scene
+        function init() {
+            showScene(0);
+            updateProgressBar();
+        }
+
+        function showScene(index) {
+            const sections = document.querySelectorAll('.story-section');
+            
+            // Hide all sections
+            sections.forEach(section => {
+                section.classList.remove('visible');
+            });
+            
+            // Show current scene
+            if (sections[index]) {
+                sections[index].classList.add('visible');
+                sections[index].scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+            }
+            
+            currentScene = index;
+            updateProgressBar();
+        }
+
+        function nextScene() {
+            if (currentScene < totalScenes - 1) {
+                showScene(currentScene + 1);
+            } else {
+                showScene(0); // Loop back to first scene
+            }
+        }
+
+        function previousScene() {
+            if (currentScene > 0) {
+                showScene(currentScene - 1);
+            } else {
+                showScene(totalScenes - 1); // Loop to last scene
+            }
+        }
+
+        function toggleAutoPlay() {
+            const playBtn = document.getElementById('playBtn');
+            
+            if (isAutoPlay) {
+                clearInterval(autoPlayInterval);
+                isAutoPlay = false;
+                playBtn.innerHTML = '▶️';
+                playBtn.title = 'Auto Play';
+            } else {
+                autoPlayInterval = setInterval(() => {
+                    nextScene();
+                }, 5000); // Change scene every 5 seconds
+                isAutoPlay = true;
+                playBtn.innerHTML = '⏸️';
+                playBtn.title = 'Pause';
+            }
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progressBar');
+            const progress = ((currentScene + 1) / totalScenes) * 100;
+            progressBar.style.width = progress + '%';
+        }
+
+        // Intersection Observer for automatic scene visibility
+        function setupIntersectionObserver() {
+            const options = {
+                threshold: 0.5,
+                rootMargin: '0px 0px -100px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !isAutoPlay) {
+                        const sceneIndex = parseInt(entry.target.dataset.scene) - 1;
+                        if (sceneIndex !== currentScene) {
+                            currentScene = sceneIndex;
+                            updateProgressBar();
+                        }
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, options);
+
+            document.querySelectorAll('.story-section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    previousScene();
+                    break;
+                case 'ArrowRight':
+                case ' ':
+                    e.preventDefault();
+                    nextScene();
+                    break;
+                case 'Enter':
+                    toggleAutoPlay();
+                    break;
+            }
+        });
+
+        // Touch gestures for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextScene(); // Swipe left - next scene
+                } else {
+                    previousScene(); // Swipe right - previous scene
+                }
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            init();
+            setupIntersectionObserver();
+        });
+
+        // Add some interactive sound effects (visual feedback)
+        function addVisualFeedback() {
+            const controlBtns = document.querySelectorAll('.control-btn');
+            controlBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95) translateY(-3px)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-3px)';
+                    }, 150);
+                });
+            });
+        }
+
+        // Initialize visual feedback
+        document.addEventListener('DOMContentLoaded', addVisualFeedback);
+    </script>
+</body>
+</html>
