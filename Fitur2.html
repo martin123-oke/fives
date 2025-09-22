@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air Dito</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 50%, #87CEEB 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #2E86AB;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .story-section {
+            background: rgba(255, 255, 255, 0.95);
+            margin: 20px 0;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4, #45B7D1);
+        }
+
+        .story-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .interactive-question {
+            background: linear-gradient(135deg, #FFE066, #FF6B6B);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .question-text {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+
+        .bubble-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .bubble-option {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #2E86AB;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .bubble-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            background: #fff;
+        }
+
+        .bubble-option.correct {
+            background: linear-gradient(135deg, #4ECDC4, #44A08D);
+            color: white;
+            animation: bounce 0.6s ease;
+        }
+
+        .bubble-option.incorrect {
+            background: linear-gradient(135deg, #FF6B6B, #EE5A6F);
+            color: white;
+            animation: shake 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.correct {
+            background: linear-gradient(135deg, #C3F7D2, #A8E6CF);
+            color: #2D5A3D;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background: linear-gradient(135deg, #FFD6D6, #FFC0CB);
+            color: #8B0000;
+            display: block;
+        }
+
+        .water-drops {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .drop {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #4ECDC4;
+            border-radius: 50% 50% 50% 0;
+            transform: rotate(-45deg);
+            animation: fall linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh) rotate(-45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateY(100vh) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+
+        .character {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .character img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 4px solid #FFE066;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ECDC4, #44A08D);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2E86AB;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .bubble-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .bubble-option {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="water-drops" id="waterDrops"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Petualangan Tetes Air di Langit Biru 🌊</h1>
+            <div class="score">Skor: <span id="score">0</span>/6</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="character">
+                <div style="font-size: 3rem;">👦</div>
+                <strong>Dito</strong>
+            </div>
+            <div class="story-text">
+                Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama Dito. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang siklus air. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?
+            </div>
+            <div class="story-text">
+                "Aku ingin melihat sendiri!" gumam Dito.
+            </div>
+            
+            <div class="interactive-question">
+                <div class="question-text">🤔 Apa maksud tersembunyi dari kalimat "Aku ingin melihat sendiri!"?</div>
+                <div class="bubble-options">
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Dito ingin pergi ke laboratorium</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, true)">Dito ingin belajar langsung dari pengalaman</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Dito ingin bertanya pada guru lagi</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau. Di sampingnya, ada ribuan tetes air lain yang juga sedang berpetualang.
+            </div>
+            <div class="story-text">
+                Matahari mulai bersinar. Panasnya terasa hangat. Dito merasakan tubuhnya semakin ringan dan melayang ke atas. "Wah, kita menguap!" seru Dito.
+            </div>
+            
+            <div class="interactive-question">
+                <div class="question-text">☀️ Mengapa penulis menggunakan sudut pandang Dito sebagai tetes air?</div>
+                <div class="bubble-options">
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Agar cerita lebih pendek</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, true)">Agar pembaca merasakan langsung proses siklus air</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Agar Dito terlihat pintar</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Saat di atas, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul. Mereka saling menempel, membentuk gumpalan-gumpalan putih yang lembut. "Ini namanya kondensasi!" Dito teringat pelajaran gurunya.
+            </div>
+            
+            <div class="interactive-question">
+                <div class="question-text">☁️ Apa pesan tersirat dari bagian ini?</div>
+                <div class="bubble-options">
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Dito sangat pintar</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, true)">Pengalaman langsung membantu memahami pelajaran</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Kondensasi sangat mudah terjadi</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Di dalam sungai, Dito melihat pemandangan yang menyedihkan. Air sungai kotor dan banyak sampah plastik yang mengapung. Ia melihat sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat.
+            </div>
+            <div class="story-text">
+                Dito berpikir kritis. Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya?
+            </div>
+            
+            <div class="interactive-question">
+                <div class="question-text">🌍 Apa makna tersembunyi dari bagian ini?</div>
+                <div class="bubble-options">
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Sungai harus dibersihkan oleh pemerintah</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, true)">Tindakan manusia mempengaruhi seluruh ekosistem</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Sampah plastik sangat berbahaya</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Dito terbangun. Ia menatap tetesan air hujan di jendela kamarnya. Ia kini mengerti. Siklus air adalah perjalanan yang luar biasa, tetapi juga rentan.
+            </div>
+            
+            <div class="interactive-question">
+                <div class="question-text">💭 Apa maksud dari "siklus air adalah perjalanan yang luar biasa, tetapi juga rentan"?</div>
+                <div class="bubble-options">
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Siklus air bisa berhenti kapan saja</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, true)">Siklus air indah tapi mudah rusak oleh tindakan manusia</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Siklus air terlalu rumit untuk dipahami</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="story-section">
+            <div class="story-text">
+                Dito lalu mengambil sebuah kantong plastik besar. Ia mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. "Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan," kata Dito. "Kita harus menjaga air tetap bersih agar bumi kita tetap sehat."
+            </div>
+            
+            <div class="interactive-question">
+                <div class="question-text">🌱 Apa pesan moral utama dari cerita ini?</div>
+                <div class="bubble-options">
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Belajar sains itu menyenangkan</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, false)">Mimpi bisa menjadi kenyataan</button>
+                    <button class="bubble-option" onclick="checkAnswer(this, true)">Setiap individu bertanggung jawab menjaga lingkungan</button>
+                </div>
+                <div class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="story-section" id="finalMessage" style="display: none;">
+            <div style="text-align: center; font-size: 1.3rem; color: #2E86AB;">
+                <h2>🎉 Selamat! 🎉</h2>
+                <p>Kamu telah menyelesaikan petualangan Dito!</p>
+                <p>Skor akhir: <span id="finalScore">0</span>/6</p>
+                <div style="margin-top: 20px; font-size: 2rem;">
+                    <span id="achievement"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let totalQuestions = 6;
+        let answeredQuestions = 0;
+
+        function createWaterDrops() {
+            const waterDrops = document.getElementById('waterDrops');
+            for (let i = 0; i < 15; i++) {
+                const drop = document.createElement('div');
+                drop.className = 'drop';
+                drop.style.left = Math.random() * 100 + '%';
+                drop.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                drop.style.animationDelay = Math.random() * 2 + 's';
+                waterDrops.appendChild(drop);
+            }
+        }
+
+        function checkAnswer(button, isCorrect) {
+            const bubbles = button.parentNode.querySelectorAll('.bubble-option');
+            const feedback = button.parentNode.parentNode.querySelector('.feedback');
+            
+            // Disable all buttons
+            bubbles.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                button.classList.add('correct');
+                feedback.textContent = '🎉 Benar! Kamu berhasil menangkap makna tersembunyinya!';
+                feedback.className = 'feedback correct';
+                score++;
+                
+                // Add sparkle effect
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => {
+                        const sparkle = document.createElement('div');
+                        sparkle.textContent = '✨';
+                        sparkle.style.position = 'absolute';
+                        sparkle.style.left = Math.random() * 100 + '%';
+                        sparkle.style.top = Math.random() * 100 + '%';
+                        sparkle.style.fontSize = '1.5rem';
+                        sparkle.style.animation = 'bounce 1s ease';
+                        sparkle.style.pointerEvents = 'none';
+                        button.parentNode.appendChild(sparkle);
+                        
+                        setTimeout(() => sparkle.remove(), 1000);
+                    }, i * 200);
+                }
+            } else {
+                button.classList.add('incorrect');
+                feedback.textContent = '💭 Coba pikirkan lagi... Apa makna yang lebih dalam dari kalimat tersebut?';
+                feedback.className = 'feedback incorrect';
+            }
+            
+            answeredQuestions++;
+            updateProgress();
+            
+            if (answeredQuestions === totalQuestions) {
+                setTimeout(showFinalMessage, 1500);
+            }
+        }
+
+        function updateProgress() {
+            document.getElementById('score').textContent = score;
+            const progressFill = document.getElementById('progressFill');
+            const progressPercent = (answeredQuestions / totalQuestions) * 100;
+            progressFill.style.width = progressPercent + '%';
+        }
+
+        function showFinalMessage() {
+            const finalMessage = document.getElementById('finalMessage');
+            const finalScore = document.getElementById('finalScore');
+            const achievement = document.getElementById('achievement');
+            
+            finalScore.textContent = score;
+            finalMessage.style.display = 'block';
+            
+            if (score === 6) {
+                achievement.textContent = '🏆 Detektif Makna Tersembunyi!';
+            } else if (score >= 4) {
+                achievement.textContent = '🌟 Pembaca yang Cerdas!';
+            } else if (score >= 2) {
+                achievement.textContent = '📚 Terus Berlatih!';
+            } else {
+                achievement.textContent = '💪 Jangan Menyerah!';
+            }
+            
+            finalMessage.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createWaterDrops();
+        });
+    </script>
+</body>
+</html>
