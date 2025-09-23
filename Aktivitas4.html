@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air di Langit Biru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(135deg, #87CEEB, #98FB98);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2E86C1;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #3498DB, #2980B9);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(45deg, #E74C3C, #C0392B);
+        }
+
+        .section {
+            display: none;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Story Section */
+        .story-content {
+            line-height: 1.8;
+            font-size: 18px;
+            text-align: justify;
+        }
+
+        .story-content p {
+            margin-bottom: 20px;
+        }
+
+        /* Drag and Drop Activity */
+        .drag-activity {
+            margin-top: 30px;
+        }
+
+        .sentence-bank {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px dashed #BDC3C7;
+        }
+
+        .draggable {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            background: linear-gradient(45deg, #F39C12, #E67E22);
+            color: white;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .draggable:hover {
+            transform: scale(1.05);
+        }
+
+        .draggable.dragging {
+            opacity: 0.5;
+            transform: rotate(5deg);
+        }
+
+        .drop-zone {
+            min-height: 200px;
+            background: #ECF0F1;
+            border: 3px dashed #3498DB;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .drop-zone.drag-over {
+            background: #D5DBDB;
+            border-color: #E74C3C;
+        }
+
+        .dropped-item {
+            background: linear-gradient(45deg, #27AE60, #229954);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .remove-btn {
+            background: #E74C3C;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Writing Activity */
+        .writing-area {
+            margin-top: 30px;
+        }
+
+        .writing-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid #BDC3C7;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .writing-textarea:focus {
+            outline: none;
+            border-color: #3498DB;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback-positive {
+            background: linear-gradient(45deg, #2ECC71, #27AE60);
+            color: white;
+        }
+
+        .feedback-neutral {
+            background: linear-gradient(45deg, #F39C12, #E67E22);
+            color: white;
+        }
+
+        .feedback-negative {
+            background: linear-gradient(45deg, #E74C3C, #C0392B);
+            color: white;
+        }
+
+        /* Presentation Section */
+        .presentation-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .mode-card {
+            background: linear-gradient(135deg, #9B59B6, #8E44AD);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .mode-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .presentation-content {
+            display: none;
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .presentation-content.active {
+            display: block;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #1ABC9C, #16A085);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .action-btn:disabled {
+            background: #BDC3C7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .story-content {
+                font-size: 16px;
+            }
+            
+            .draggable {
+                display: block;
+                margin: 8px 0;
+            }
+            
+            .presentation-modes {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .word-count {
+            text-align: right;
+            font-size: 14px;
+            color: #7F8C8D;
+            margin-top: 10px;
+        }
+
+        .progress-indicator {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #2C3E50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌧️ Petualangan Tetes Air di Langit Biru ☁️</h1>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('story')">📖 Baca Cerita</button>
+            <button class="nav-btn" onclick="showSection('drag-drop')">🧩 Susun Ringkasan</button>
+            <button class="nav-btn" onclick="showSection('writing')">✍️ Tulis Ringkasan</button>
+            <button class="nav-btn" onclick="showSection('presentation')">🎭 Presentasi</button>
+        </div>
+
+        <!-- Story Section -->
+        <div id="story" class="section active">
+            <h2>📚 Cerita Petualangan Dito</h2>
+            <div class="story-content">
+                <p>Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama Dito. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang siklus air. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?</p>
+                
+                <p>"Aku ingin melihat sendiri!" gumam Dito.</p>
+                
+                <p>Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau. Di sampingnya, ada ribuan tetes air lain yang juga sedang berpetualang.</p>
+                
+                <p>Matahari mulai bersinar. Panasnya terasa hangat. Dito merasakan tubuhnya semakin ringan dan melayang ke atas. "Wah, kita menguap!" seru Dito. Ia melihat tetes air di sekitarnya juga ikut naik. Mereka bergerak semakin tinggi, melewati gedung-gedung dan pepohonan.</p>
+                
+                <p>Saat di atas, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul. Mereka saling menempel, membentuk gumpalan-gumpalan putih yang lembut. "Ini namanya kondensasi!" Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi awan yang besar.</p>
+                
+                <p>Awan itu terus melayang, mengikuti angin. Lalu, Dito merasa tubuhnya semakin berat. Ia tidak bisa lagi menahan diri. "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya jatuh ke bawah. "Ini presipitasi atau hujan!" Dito berteriak senang. Ia jatuh di sebuah taman, lalu mengalir ke sungai.</p>
+                
+                <p>Di dalam sungai, Dito melihat pemandangan yang menyedihkan. Air sungai kotor dan banyak sampah plastik yang mengapung. Ia melihat sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat.</p>
+                
+                <p>Dito berpikir kritis. Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya? Air yang menguap akan kotor dan udara bisa jadi tidak sehat.</p>
+                
+                <p>Dito terbangun. Ia menatap tetesan air hujan di jendela kamarnya. Ia kini mengerti. Siklus air adalah perjalanan yang luar biasa, tetapi juga rentan. Setiap tetes air yang jatuh ke bumi akan kembali menguap. Jika kita membuang sampah sembarangan dan membuat sungai kotor, kita merusak seluruh siklus.</p>
+                
+                <p>Dito lalu mengambil sebuah kantong plastik besar. Ia mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. "Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan," kata Dito. "Kita harus menjaga air tetap bersih agar bumi kita tetap sehat."</p>
+            </div>
+        </div>
+
+        <!-- Drag and Drop Activity -->
+        <div id="drag-drop" class="section">
+            <h2>🧩 Susun Ringkasan Cerita</h2>
+            <p>Seret kalimat-kalimat di bawah ini untuk menyusun ringkasan cerita yang benar!</p>
+            
+            <div class="drag-activity">
+                <div class="sentence-bank">
+                    <h3>📝 Bank Kalimat:</h3>
+                    <div class="draggable" draggable="true">Dito bermimpi menjadi setetes air dan mengalami siklus air secara langsung.</div>
+                    <div class="draggable" draggable="true">Dito bingung tentang siklus air yang dijelaskan gurunya.</div>
+                    <div class="draggable" draggable="true">Dito mengajak teman-temannya membersihkan sampah untuk menjaga lingkungan.</div>
+                    <div class="draggable" draggable="true">Tetes air mengalami evaporasi, kondensasi, dan presipitasi.</div>
+                    <div class="draggable" draggable="true">Dito melihat sungai yang kotor dan berpikir kritis tentang dampaknya.</div>
+                    <div class="draggable" draggable="true">Dito terbangun dan memahami pentingnya menjaga kebersihan air.</div>
+                </div>
+                
+                <div class="drop-zone" id="summary-zone">
+                    <p><strong>🎯 Susun ringkasan di sini (urut dari awal hingga akhir):</strong></p>
+                </div>
+                
+                <div class="progress-indicator">
+                    <span id="progress-text">Kemajuan: 0/6 kalimat tersusun</span>
+                </div>
+                
+                <button class="action-btn" onclick="checkSummaryOrder()">✅ Periksa Urutan</button>
+                <button class="action-btn" onclick="resetDragDrop()">🔄 Ulangi</button>
+            </div>
+        </div>
+
+        <!-- Writing Activity -->
+        <div id="writing" class="section">
+            <h2>✍️ Tulis Ringkasan Sendiri</h2>
+            <p>Sekarang giliran kamu menulis ringkasan cerita dengan kata-kata sendiri!</p>
+            
+            <div class="writing-area">
+                <textarea class="writing-textarea" id="user-summary" placeholder="Tuliskan ringkasan cerita 'Petualangan Tetes Air di Langit Biru' dengan kata-katamu sendiri. Ceritakan tentang perjalanan Dito dan pelajaran yang ia dapat tentang siklus air dan lingkungan...
+
+Tips:
+- Jelaskan siapa tokoh utama dan masalahnya
+- Ceritakan petualangan Dito dalam mimpinya
+- Jelaskan tahapan siklus air yang dialami
+- Sebutkan masalah lingkungan yang ditemukan
+- Jelaskan pelajaran dan tindakan yang diambil Dito"></textarea>
+                
+                <div class="word-count">
+                    <span id="word-counter">0 kata</span>
+                </div>
+                
+                <button class="action-btn" onclick="getFeedback()">🔍 Dapatkan Umpan Balik</button>
+                <button class="action-btn" onclick="clearWriting()">🗑️ Hapus Tulisan</button>
+                
+                <div class="feedback-area" id="feedback">
+                </div>
+            </div>
+        </div>
+
+        <!-- Presentation Section -->
+        <div id="presentation" class="section">
+            <h2>🎭 Mode Presentasi</h2>
+            <p>Pilih cara presentasi yang kamu sukai untuk berbagi pemahaman tentang cerita ini!</p>
+            
+            <div class="presentation-modes">
+                <div class="mode-card" onclick="showPresentation('storyteller')">
+                    <h3>🎪 Pendongeng</h3>
+                    <p>Ceritakan ulang dengan gaya bercerita yang menarik</p>
+                </div>
+                
+                <div class="mode-card" onclick="showPresentation('scientist')">
+                    <h3>🔬 Ilmuwan Muda</h3>
+                    <p>Jelaskan siklus air dengan pendekatan saintifik</p>
+                </div>
+                
+                <div class="mode-card" onclick="showPresentation('environmentalist')">
+                    <h3>🌱 Penjaga Lingkungan</h3>
+                    <p>Fokus pada pesan lingkungan dan solusinya</p>
+                </div>
+            </div>
+            
+            <!-- Storyteller Presentation -->
+            <div id="storyteller-content" class="presentation-content">
+                <h3>🎪 Mode Pendongeng</h3>
+                <div style="background: linear-gradient(45deg, #FF6B6B, #4ECDC4); padding: 20px; border-radius: 10px; color: white; margin: 15px 0;">
+                    <h4>📢 Panduan Bercerita:</h4>
+                    <ul style="margin: 15px 0;">
+                        <li><strong>Pembukaan:</strong> "Teman-teman, hari ini saya akan bercerita tentang petualangan seorang anak yang sangat ingin tahu..."</li>
+                        <li><strong>Suara karakter:</strong> Gunakan suara berbeda untuk Dito dan tetes air lainnya</li>
+                        <li><strong>Gerakan:</strong> Peragakan gerakan menguap, melayang, dan jatuh seperti hujan</li>
+                        <li><strong>Ekspresi:</strong> Tunjukkan rasa ingin tahu Dito, kegembiraan saat terbang, dan kesedihan melihat sungai kotor</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #F8F9FA; padding: 20px; border-radius: 10px; border-left: 4px solid #3498DB;">
+                    <h4>💡 Poin Cerita Utama:</h4>
+                    <p><strong>1. Rasa Ingin Tahu:</strong> Dito yang selalu ingin tahu tentang siklus air</p>
+                    <p><strong>2. Petualangan Mimpi:</strong> Perjalanan menjadi tetes air dan merasakan siklus air</p>
+                    <p><strong>3. Pembelajaran:</strong> Memahami evaporasi, kondensasi, dan presipitasi</p>
+                    <p><strong>4. Kesadaran:</strong> Melihat dampak pencemaran terhadap siklus air</p>
+                    <p><strong>5. Tindakan:</strong> Mengajak teman-teman menjaga lingkungan</p>
+                </div>
+            </div>
+            
+            <!-- Scientist Presentation -->
+            <div id="scientist-content" class="presentation-content">
+                <h3>🔬 Mode Ilmuwan Muda</h3>
+                <div style="background: linear-gradient(45deg, #667eea, #764ba2); padding: 20px; border-radius: 10px; color: white; margin: 15px 0;">
+                    <h4>🧪 Struktur Presentasi Ilmiah:</h4>
+                    <ul style="margin: 15px 0;">
+                        <li><strong>Hipotesis:</strong> "Bagaimana air bisa naik ke langit dan kembali sebagai hujan?"</li>
+                        <li><strong>Observasi:</strong> Pengalaman Dito dalam mimpi sebagai "eksperimen"</li>
+                        <li><strong>Data:</strong> Tiga tahap siklus air yang dialami</li>
+                        <li><strong>Analisis:</strong> Dampak pencemaran terhadap siklus air</li>
+                        <li><strong>Kesimpulan:</strong> Pentingnya menjaga kebersihan air</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #E8F6F3; padding: 20px; border-radius: 10px; border: 2px solid #1ABC9C;">
+                    <h4>🌡️ Konsep Ilmiah yang Dijelaskan:</h4>
+                    <p><strong>Evaporasi:</strong> Air berubah dari cair menjadi gas karena panas matahari</p>
+                    <p><strong>Kondensasi:</strong> Uap air mendingin dan bergabung membentuk titik-titik air di awan</p>
+                    <p><strong>Presipitasi:</strong> Air jatuh kembali ke bumi sebagai hujan, salju, atau hujan es</p>
+                    <p><strong>Dampak Pencemaran:</strong> Sampah menggangu aliran air dan kualitas udara</p>
+                </div>
+            </div>
+            
+            <!-- Environmentalist Presentation -->
+            <div id="environmentalist-content" class="presentation-content">
+                <h3>🌱 Mode Penjaga Lingkungan</h3>
+                <div style="background: linear-gradient(45deg, #11998e, #38ef7d); padding: 20px; border-radius: 10px; color: white; margin: 15px 0;">
+                    <h4>🌍 Pesan Lingkungan Utama:</h4>
+                    <ul style="margin: 15px 0;">
+                        <li><strong>Masalah:</strong> Pencemaran sungai mengganggu siklus air</li>
+                        <li><strong>Dampak:</strong> Air kotor → udara tidak sehat → lingkungan rusak</li>
+                        <li><strong>Solusi:</strong> Membersihkan sampah dan tidak membuang sembarangan</li>
+                        <li><strong>Aksi:</strong> Mengajak teman-teman peduli lingkungan</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #FFF3CD; padding: 20px; border-radius: 10px; border: 2px solid #F39C12;">
+                    <h4>♻️ Ajakan Bertindak:</h4>
+                    <p><strong>Apa yang bisa kita lakukan?</strong></p>
+                    <p>✓ Tidak membuang sampah ke sungai atau selokan</p>
+                    <p>✓ Menggunakan produk ramah lingkungan</p>
+                    <p>✓ Mengajak keluarga dan teman peduli kebersihan air</p>
+                    <p>✓ Ikut kegiatan membersihkan lingkungan</p>
+                    <p>✓ Menghemat penggunaan air</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let draggedElement = null;
+        let droppedItems = [];
+        const correctOrder = [
+            "Dito bingung tentang siklus air yang dijelaskan gurunya.",
+            "Dito bermimpi menjadi setetes air dan mengalami siklus air secara langsung.",
+            "Tetes air mengalami evaporasi, kondensasi, dan presipitasi.",
+            "Dito melihat sungai yang kotor dan berpikir kritis tentang dampaknya.",
+            "Dito terbangun dan memahami pentingnya menjaga kebersihan air.",
+            "Dito mengajak teman-temannya membersihkan sampah untuk menjaga lingkungan."
+        ];
+
+        // Navigation functions
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Drag and Drop functionality
+        function initializeDragAndDrop() {
+            const draggables = document.querySelectorAll('.draggable');
+            const dropZone = document.getElementById('summary-zone');
+
+            draggables.forEach(item => {
+                item.addEventListener('dragstart', handleDragStart);
+                item.addEventListener('dragend', handleDragEnd);
+            });
+
+            dropZone.addEventListener('dragover', handleDragOver);
+            dropZone.addEventListener('drop', handleDrop);
+            dropZone.addEventListener('dragenter', handleDragEnter);
+            dropZone.addEventListener('dragleave', handleDragLeave);
+        }
+
+        function handleDragStart(e) {
+            draggedElement = this;
+            this.classList.add('dragging');
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.outerHTML);
+        }
+
+        function handleDragEnd(e) {
+            this.classList.remove('dragging');
+        }
+
+        function handleDragOver(e) {
+            if (e.preventDefault) {
+                e.preventDefault();
+            }
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function handleDragEnter(e) {
+            this.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            this.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            if (e.stopPropagation) {
+                e.stopPropagation();
+            }
+
+            const dropZone = document.getElementById('summary-zone');
+            dropZone.classList.remove('drag-over');
+
+            if (draggedElement) {
+                // Create dropped item
+                const droppedItem = document.createElement('div');
+                droppedItem.className = 'dropped-item';
+                droppedItem.innerHTML = `
+                    <span>${draggedElement.textContent}</span>
+                    <button class="remove-btn" onclick="removeItem(this)">×</button>
+                `;
+
+                dropZone.appendChild(droppedItem);
+                droppedItems.push(draggedElement.textContent);
+                
+                // Remove original draggable item
+                draggedElement.remove();
+                
+                updateProgress();
+            }
+
+            return false;
+        }
+
+        function removeItem(button) {
+            const item = button.parentElement;
+            const text = item.querySelector('span').textContent;
+            
+            // Remove from dropped items
+            const index = droppedItems.indexOf(text);
+            if (index > -1) {
+                droppedItems.splice(index, 1);
+            }
+
+            // Add back to sentence bank
+            const sentenceBank = document.querySelector('.sentence-bank');
+            const newDraggable = document.createElement('div');
+            newDraggable.className = 'draggable';
+            newDraggable.draggable = true;
+            newDraggable.textContent = text;
+            
+            // Add event listeners
+            newDraggable.addEventListener('dragstart', handleDragStart);
+            newDraggable.addEventListener('dragend', handleDragEnd);
+            
+            sentenceBank.appendChild(newDraggable);
+
+            // Remove dropped item
+            item.remove();
+            
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progressText = document.getElementById('progress-text');
+            progressText.textContent = `Kemajuan: ${droppedItems.length}/6 kalimat tersusun`;
+        }
+
+        function checkSummaryOrder() {
+            if (droppedItems.length !== 6) {
+                alert('Lengkapi dulu semua kalimat sebelum diperiksa!');
+                return;
+            }
+
+            let correct = true;
+            for (let i = 0; i < droppedItems.length; i++) {
+                if (droppedItems[i] !== correctOrder[i]) {
+                    correct = false;
+                    break;
+                }
+            }
+
+            if (correct) {
+                alert('🎉 Selamat! Urutan ringkasan sudah benar! Kamu berhasil memahami alur cerita dengan baik.');
+            } else {
+                alert('🤔 Urutan belum tepat. Coba pikirkan lagi: cerita dimulai dari kebingungan Dito, lalu mimpinya, pengalaman siklus air, masalah yang ditemukan, pemahaman yang didapat, dan tindakan yang diambil.');
+            }
+        }
+
+        function resetDragDrop() {
+            const dropZone = document.getElementById('summary-zone');
+            const sentenceBank = document.querySelector('.sentence-bank');
+            
+            // Clear drop zone except the instruction
+            const droppedItems = dropZone.querySelectorAll('.dropped-item');
+            droppedItems.forEach(item => item.remove());
+            
+            // Clear existing draggables
+            const existingDraggables = sentenceBank.querySelectorAll('.draggable');
+            existingDraggables.forEach(item => item.remove());
+            
+            // Reset array
+            droppedItems.length = 0;
+            
+            // Recreate original draggables
+            const sentences = [
+                "Dito bermimpi menjadi setetes air dan mengalami siklus air secara langsung.",
+                "Dito bingung tentang siklus air yang dijelaskan gurunya.",
+                "Dito mengajak teman-temannya membersihkan sampah untuk menjaga lingkungan.",
+                "Tetes air mengalami evaporasi, kondensasi, dan presipitasi.",
+                "Dito melihat sungai yang kotor dan berpikir kritis tentang dampaknya.",
+                "Dito terbangun dan memahami pentingnya menjaga kebersihan air."
+            ];
+            
+            sentences.forEach(text => {
+                const draggable = document.createElement('div');
+                draggable.className = 'draggable';
+                draggable.draggable = true;
+                draggable.textContent = text;
+                draggable.addEventListener('dragstart', handleDragStart);
+                draggable.addEventListener('dragend', handleDragEnd);
+                sentenceBank.appendChild(draggable);
+            });
+            
+            updateProgress();
+        }
+
+        // Writing activity functions
+        function updateWordCount() {
+            const textarea = document.getElementById('user-summary');
+            const wordCounter = document.getElementById('word-counter');
+            const text = textarea.value.trim();
+            const wordCount = text ? text.split(/\s+/).length : 0;
+            wordCounter.textContent = `${wordCount} kata`;
+        }
+
+        function getFeedback() {
+            const textarea = document.getElementById('user-summary');
+            const feedbackDiv = document.getElementById('feedback');
+            const text = textarea.value.trim();
+            
+            if (text.length < 50) {
+                showFeedback('Tulisan masih terlalu pendek. Coba ceritakan lebih detail tentang petualangan Dito!', 'negative');
+                return;
+            }
+            
+            const wordCount = text.split(/\s+/).length;
+            const keyWords = ['Dito', 'siklus air', 'evaporasi', 'kondensasi', 'presipitasi', 'lingkungan', 'sampah'];
+            const foundKeyWords = keyWords.filter(word => 
+                text.toLowerCase().includes(word.toLowerCase())
+            );
+            
+            let feedback = '';
+            let type = '';
+            
+            if (foundKeyWords.length >= 5 && wordCount >= 100) {
+                feedback = `🌟 Excellent! Ringkasan kamu sangat lengkap! Kamu telah menyebutkan ${foundKeyWords.length} konsep penting: ${foundKeyWords.join(', ')}. Kamu berhasil menangkap pesan cerita tentang siklus air dan pentingnya menjaga lingkungan.`;
+                type = 'positive';
+            } else if (foundKeyWords.length >= 3 && wordCount >= 50) {
+                feedback = `👍 Bagus! Kamu sudah menyebutkan beberapa poin penting (${foundKeyWords.join(', ')}). Coba tambahkan lagi detail tentang: ${keyWords.filter(word => !foundKeyWords.includes(word)).slice(0, 2).join(' dan ')}.`;
+                type = 'neutral';
+            } else {
+                feedback = `💪 Terus berlatih! Coba sertakan lebih banyak detail tentang: tokoh utama (Dito), tahapan siklus air (evaporasi, kondensasi, presipitasi), dan pesan lingkungan dalam cerita.`;
+                type = 'negative';
+            }
+            
+            showFeedback(feedback, type);
+        }
+
+        function showFeedback(message, type) {
+            const feedbackDiv = document.getElementById('feedback');
+            feedbackDiv.className = `feedback-area feedback-${type}`;
+            feedbackDiv.innerHTML = `<strong>Umpan Balik:</strong><br>${message}`;
+            feedbackDiv.style.display = 'block';
+        }
+
+        function clearWriting() {
+            if (confirm('Yakin ingin menghapus semua tulisan?')) {
+                document.getElementById('user-summary').value = '';
+                document.getElementById('feedback').style.display = 'none';
+                updateWordCount();
+            }
+        }
+
+        // Presentation functions
+        function showPresentation(mode) {
+            // Hide all presentation contents
+            const contents = document.querySelectorAll('.presentation-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Show selected presentation
+            document.getElementById(mode + '-content').classList.add('active');
+        }
+
+        // Initialize when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            initializeDragAndDrop();
+            
+            // Add word count listener
+            const textarea = document.getElementById('user-summary');
+            textarea.addEventListener('input', updateWordCount);
+            
+            updateProgress();
+        });
+    </script>
+</body>
+</html>
