@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air - Visual Interaktif</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #87CEFA 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2C3E50;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #4A90E2, #5CB3CC);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💧';
+            font-size: 100px;
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            opacity: 0.2;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .header::after {
+            content: '☁️';
+            font-size: 80px;
+            position: absolute;
+            top: 10px;
+            right: -10px;
+            opacity: 0.3;
+            animation: float 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .story-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .chapter {
+            display: none;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .chapter.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chapter-title {
+            color: #4A90E2;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            border-left: 5px solid #4A90E2;
+            padding-left: 15px;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, #4A90E2, #5CB3CC);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .summary-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .summary-title {
+            color: #4A90E2;
+            font-size: 1.8em;
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #4A90E2;
+            padding-bottom: 15px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-table th {
+            background: linear-gradient(135deg, #4A90E2, #5CB3CC);
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .summary-table td {
+            padding: 20px 15px;
+            border-bottom: 2px solid #f0f0f0;
+            vertical-align: top;
+            transition: all 0.3s ease;
+        }
+
+        .summary-table tr:hover {
+            background: rgba(74, 144, 226, 0.05);
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-table tr:nth-child(even) {
+            background: rgba(135, 206, 235, 0.05);
+        }
+
+        .illustration-cell {
+            text-align: center;
+            width: 100px;
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(92, 179, 204, 0.1));
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .illustration {
+            font-size: 3em;
+            display: block;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .phase-name {
+            font-weight: bold;
+            color: #4A90E2;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .key-points {
+            text-align: left;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        .key-point {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .key-point:before {
+            content: '💧';
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .environmental-row {
+            background: rgba(231, 76, 60, 0.05) !important;
+        }
+
+        .environmental-row:hover {
+            background: rgba(231, 76, 60, 0.1) !important;
+        }
+
+        .environmental-icon {
+            color: #e74c3c;
+        }
+
+        .solution-row {
+            background: rgba(39, 174, 96, 0.05) !important;
+        }
+
+        .solution-row:hover {
+            background: rgba(39, 174, 96, 0.1) !important;
+        }
+
+        .solution-icon {
+            color: #27ae60;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4A90E2, #5CB3CC);
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .chapter-indicator {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #7f8c8d;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .cycle-diagram {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            background: rgba(74, 144, 226, 0.05);
+            border-radius: 15px;
+            border: 2px dashed #4A90E2;
+        }
+
+        .cycle-title {
+            color: #4A90E2;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .cycle-steps {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .cycle-step {
+            text-align: center;
+            padding: 10px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            min-width: 80px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .cycle-step:hover {
+            transform: scale(1.1);
+        }
+
+        .cycle-arrow {
+            font-size: 2em;
+            color: #4A90E2;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .summary-table th,
+            .summary-table td {
+                padding: 15px 10px;
+            }
+            
+            .illustration {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+            
+            .nav-button {
+                width: 100%;
+                max-width: 300px;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Petualangan Tetes Air di Langit Biru 🌤️</h1>
+            <p class="subtitle">Cerita Interaktif dengan Ringkasan Visual</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="story-section">
+                <div class="chapter-indicator">
+                    <span id="chapterIndicator">Bab 1 dari 7</span>
+                </div>
+
+                <div class="chapter active" id="chapter1">
+                    <h2 class="chapter-title">🏠 Dito yang Penasaran</h2>
+                    <div class="story-text">
+                        Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama Dito. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang siklus air. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?
+                        <br><br>
+                        "Aku ingin melihat sendiri!" gumam Dito sambil menatap langit biru di luar jendela kelasnya.
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter2">
+                    <h2 class="chapter-title">🛌 Mimpi Ajaib Dimulai</h2>
+                    <div class="story-text">
+                        Malam harinya, Dito tidur dengan kepala penuh pertanyaan. Ia bermimpi indah. Dalam mimpinya, ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau yang jernih dan biru. 
+                        <br><br>
+                        Di sampingnya, ada ribuan tetes air lain yang berkilau seperti berlian kecil. Semua tetes air tampak bersemangat, seolah-olah mereka juga sedang menunggu petualangan yang luar biasa!
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter3">
+                    <h2 class="chapter-title">☀️ Evaporasi - Terbang ke Langit</h2>
+                    <div class="story-text">
+                        Matahari mulai bersinar dengan hangat. Panasnya terasa lembut dan nyaman. Dito merasakan tubuhnya semakin ringan dan mulai melayang ke atas perlahan-lahan.
+                        <br><br>
+                        "Wah, kita menguap!" seru Dito dengan gembira. Ia melihat tetes air di sekitarnya juga ikut naik, bergerak semakin tinggi, melewati gedung-gedung tinggi dan pepohonan hijau. Pemandangan dari atas sangat menakjubkan!
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter4">
+                    <h2 class="chapter-title">☁️ Kondensasi - Menjadi Awan</h2>
+                    <div class="story-text">
+                        Saat mencapai ketinggian yang tinggi, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul dan saling menempel. Mereka membentuk gumpalan-gumpalan putih yang lembut seperti kapas.
+                        <br><br>
+                        "Ini namanya kondensasi!" Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi awan yang besar dan indah. Awan itu melayang mengikuti arah angin, menari-nari di langit biru.
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter5">
+                    <h2 class="chapter-title">🌧️ Presipitasi - Hujan Turun</h2>
+                    <div class="story-text">
+                        Awan terus mengumpulkan lebih banyak tetes air. Dito merasa tubuhnya semakin berat dan tidak bisa lagi menahan diri di atas.
+                        <br><br>
+                        "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya mulai jatuh ke bawah seperti hujan yang riang. "Ini presipitasi atau hujan!" Dito berteriak senang sambil menikmati perjalanan turun yang menyenangkan.
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter6">
+                    <h2 class="chapter-title">🏞️ Kembali ke Bumi - Masalah Lingkungan</h2>
+                    <div class="story-text">
+                        Dito jatuh di sebuah taman, lalu mengalir menuju sungai. Namun pemandangan yang ia lihat membuatnya sedih. Air sungai kotor dan banyak sampah plastik yang mengapung di mana-mana. Sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat.
+                        <br><br>
+                        Dito berpikir kritis: "Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya? Air yang menguap akan kotor dan udara bisa jadi tidak sehat untuk semua makhluk hidup."
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter7">
+                    <h2 class="chapter-title">🌱 Terbangun dengan Tekad Baru</h2>
+                    <div class="story-text">
+                        Dito terbangun dari mimpinya yang menakjubkan. Ia menatap tetesan air hujan di jendela kamarnya dengan pemahaman yang baru. Ia kini mengerti bahwa siklus air adalah perjalangan yang luar biasa, tetapi juga sangat rentan terhadap kerusakan.
+                        <br><br>
+                        Dengan semangat, Dito mengambil sebuah kantong besar dan mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. "Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan," kata Dito dengan penuh tekad. "Kita harus menjaga air tetap bersih agar bumi kita tetap sehat dan indah!"
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="nav-button" id="prevBtn" onclick="previousChapter()">⬅️ Sebelumnya</button>
+                    <button class="nav-button" id="nextBtn" onclick="nextChapter()">Selanjutnya ➡️</button>
+                    <button class="nav-button" onclick="showAllSummary()">📊 Lihat Semua Ringkasan</button>
+                </div>
+            </div>
+
+            <div class="summary-section">
+                <h2 class="summary-title">📊 Ringkasan Petualangan Tetes Air</h2>
+                
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Ilustrasi</th>
+                            <th>Fase/Kejadian</th>
+                            <th>Poin-Poin Utama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="illustration-cell">
+                                <span class="illustration">👦</span>
+                                <div class="phase-name">Pengenalan</div>
+                            </td>
+                            <td>
+                                <strong>Dito yang Penasaran</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Dito suka membaca dan bertanya</div>
+                                <div class="key-point">Guru menjelaskan siklus air</div>
+                                <div class="key-point">Dito bingung bagaimana air naik ke langit</div>
+                                <div class="key-point">Ingin melihat proses sendiri</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="illustration-cell">
+                                <span class="illustration">💤</span>
+                                <div class="phase-name">Mimpi</div>
+                            </td>
+                            <td>
+                                <strong>Transformasi Ajaib</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Tubuh mengecil menjadi tetes air</div>
+                                <div class="key-point">Berada di danau yang jernih</div>
+                                <div class="key-point">Bersama ribuan tetes air lain</div>
+                                <div class="key-point">Siap memulai petualangan</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="illustration-cell">
+                                <span class="illustration">☀️</span>
+                                <div class="phase-name">Evaporasi</div>
+                            </td>
+                            <td>
+                                <strong>Naik ke Langit</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Matahari bersinar hangat</div>
+                                <div class="key-point">Tubuh menjadi ringan dan melayang</div>
+                                <div class="key-point">Proses penguapan air</div>
+                                <div class="key-point">Melewati gedung dan pepohonan</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="illustration-cell">
+                                <span class="illustration">☁️</span>
+                                <div class="phase-name">Kondensasi</div>
+                            </td>
+                            <td>
+                                <strong>Pembentukan Awan</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Udara menjadi dingin di ketinggian</div>
+                                <div class="key-point">Tetes air saling menempel</div>
+                                <div class="key-point">Membentuk gumpalan putih lembut</div>
+                                <div class="key-point">Berubah menjadi awan besar</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="illustration-cell">
+                                <span class="illustration">🌧️</span>
+                                <div class="phase-name">Presipitasi</div>
+                            </td>
+                            <td>
+                                <strong>Turun sebagai Hujan</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Awan mengumpulkan lebih banyak air</div>
+                                <div class="key-point">Tetes air menjadi semakin berat</div>
+                                <div class="key-point">Jatuh ke bawah sebagai hujan</div>
+                                <div class="key-point">Kembali ke permukaan bumi</div>
+                            </td>
+                        </tr>
+                        <tr class="environmental-row">
+                            <td class="illustration-cell">
+                                <span class="illustration environmental-icon">🗑️</span>
+                                <div class="phase-name">Polusi</div>
+                            </td>
+                            <td>
+                                <strong>Masalah Lingkungan</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Sungai tercemar sampah plastik</div>
+                                <div class="key-point">Aliran air tersumbat</div>
+                                <div class="key-point">Air sungai meluap</div>
+                                <div class="key-point">Mengancam siklus air selanjutnya</div>
+                            </td>
+                        </tr>
+                        <tr class="solution-row">
+                            <td class="illustration-cell">
+                                <span class="illustration solution-icon">♻️</span>
+                                <div class="phase-name">Solusi</div>
+                            </td>
+                            <td>
+                                <strong>Aksi Peduli Lingkungan</strong>
+                            </td>
+                            <td class="key-points">
+                                <div class="key-point">Dito terbangun dengan kesadaran baru</div>
+                                <div class="key-point">Mengajak teman membersihkan sampah</div>
+                                <div class="key-point">Menjaga kebersihan air</div>
+                                <div class="key-point">Melindungi siklus air untuk bumi sehat</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="cycle-diagram">
+                    <div class="cycle-title">🔄 Diagram Siklus Air</div>
+                    <div class="cycle-steps">
+                        <div class="cycle-step">
+                            <div>🌊</div>
+                            <div>Danau/Laut</div>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step">
+                            <div>☀️</div>
+                            <div>Evaporasi</div>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step">
+                            <div>☁️</div>
+                            <div>Kondensasi</div>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step">
+                            <div>🌧️</div>
+                            <div>Presipitasi</div>
+                        </div>
+                        <div class="cycle-arrow">→</div>
+                        <div class="cycle-step">
+                            <div>🏞️</div>
+                            <div>Kembali ke Bumi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChapter = 1;
+        const totalChapters = 7;
+
+        function updateProgress() {
+            const progress = (currentChapter / totalChapters) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateChapterIndicator() {
+            document.getElementById('chapterIndicator').textContent = `Bab ${currentChapter} dari ${totalChapters}`;
+        }
+
+        function showChapter(chapterNum) {
+            // Hide all chapters
+            const chapters = document.querySelectorAll('.chapter');
+            chapters.forEach(chapter => chapter.classList.remove('active'));
+            
+            // Show current chapter
+            document.getElementById(`chapter${chapterNum}`).classList.add('active');
+            
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = chapterNum === 1;
+            nextBtn.disabled = chapterNum === totalChapters;
+            
+            updateProgress();
+            updateChapterIndicator();
+        }
+
+        function nextChapter() {
+            if (currentChapter < totalChapters) {
+                currentChapter++;
+                showChapter(currentChapter);
+            }
+        }
+
+        function previousChapter() {
+            if (currentChapter > 1) {
+                currentChapter--;
+                showChapter(currentChapter);
+            }
+        }
+
+        function showAllSummary() {
+            alert('Tabel ringkasan sudah ditampilkan di sebelah kanan! 📊\n\nAnda dapat melihat semua poin-poin utama dari petualangan Dito sebagai tetes air, lengkap dengan ilustrasi untuk setiap fase dalam siklus air.');
+        }
+
+        // Initialize the story
+        document.addEventListener('DOMContentLoaded', function() {
+            showChapter(1);
+            updateProgress();
+            
+            // Add hover effects to table rows
+            const tableRows = document.querySelectorAll('.summary-table tr');
+            tableRows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+            
+            // Animate illustrations on load
+            const illustrations = document.querySelectorAll('.illustration');
+            illustrations.forEach((ill, index) => {
+                setTimeout(() => {
+                    ill.style.animation = 'bounce 2s infinite';
+                }, index * 200);
+            });
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') {
+                previousChapter();
+            } else if (event.key === 'ArrowRight' || event.key === 'ArrowDown') {
+                nextChapter();
+            }
+        });
+    </script>
+</body>
+</html>
