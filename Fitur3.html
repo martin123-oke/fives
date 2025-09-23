@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air di Langit Biru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #87CEFA 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2C3E50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(90deg, #4A90E2, #5CB3CC);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💧';
+            font-size: 100px;
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            opacity: 0.2;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .header::after {
+            content: '☁️';
+            font-size: 80px;
+            position: absolute;
+            top: 10px;
+            right: -10px;
+            opacity: 0.3;
+            animation: float 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+
+        .story-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .story-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .chapter {
+            display: none;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .chapter.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .chapter-title {
+            color: #4A90E2;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            border-left: 5px solid #4A90E2;
+            padding-left: 15px;
+        }
+
+        .navigation {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .nav-button {
+            background: linear-gradient(45deg, #4A90E2, #5CB3CC);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 0 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .nav-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .interactive-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+        }
+
+        .panel-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #4A90E2;
+        }
+
+        .panel-title {
+            color: #4A90E2;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .record-section {
+            text-align: center;
+        }
+
+        .record-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .record-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .record-btn.recording {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .recording-status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 1em;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+        }
+
+        .save-btn {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+        }
+
+        .saved-message {
+            color: #27ae60;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 5px;
+            display: none;
+        }
+
+        .reflection-prompts {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .reflection-prompts h4 {
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .reflection-prompts ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .reflection-prompts li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .reflection-prompts li:before {
+            content: '💭';
+            position: absolute;
+            left: 0;
+        }
+
+        .progress-bar {
+            background: #ecf0f1;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #4A90E2, #5CB3CC);
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .chapter-indicator {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-content {
+                padding: 20px;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌊 Petualangan Tetes Air di Langit Biru 🌤️</h1>
+            <p class="subtitle">Cerita Interaktif tentang Siklus Air dan Lingkungan</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="main-content">
+            <div class="story-section">
+                <div class="chapter-indicator">
+                    <span id="chapterIndicator">Bab 1 dari 7</span>
+                </div>
+
+                <div class="chapter active" id="chapter1">
+                    <h2 class="chapter-title">🏠 Dito yang Penasaran</h2>
+                    <div class="story-text">
+                        Di sebuah kota yang ramai, hiduplah seorang anak laki-laki bernama Dito. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang siklus air. Dito bingung. Bagaimana air bisa naik ke langit, lalu kembali lagi ke bumi sebagai hujan?
+                        <br><br>
+                        "Aku ingin melihat sendiri!" gumam Dito sambil menatap langit biru di luar jendela kelasnya.
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter2">
+                    <h2 class="chapter-title">🛌 Mimpi Ajaib Dimulai</h2>
+                    <div class="story-text">
+                        Malam harinya, Dito tidur dengan kepala penuh pertanyaan. Ia bermimpi indah. Dalam mimpinya, ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah danau yang jernih dan biru. 
+                        <br><br>
+                        Di sampingnya, ada ribuan tetes air lain yang berkilau seperti berlian kecil. Semua tetes air tampak bersemangat, seolah-olah mereka juga sedang menunggu petualangan yang luar biasa!
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter3">
+                    <h2 class="chapter-title">☀️ Evaporasi - Terbang ke Langit</h2>
+                    <div class="story-text">
+                        Matahari mulai bersinar dengan hangat. Panasnya terasa lembut dan nyaman. Dito merasakan tubuhnya semakin ringan dan mulai melayang ke atas perlahan-lahan.
+                        <br><br>
+                        "Wah, kita menguap!" seru Dito dengan gembira. Ia melihat tetes air di sekitarnya juga ikut naik, bergerak semakin tinggi, melewati gedung-gedung tinggi dan pepohonan hijau. Pemandangan dari atas sangat menakjubkan!
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter4">
+                    <h2 class="chapter-title">☁️ Kondensasi - Menjadi Awan</h2>
+                    <div class="story-text">
+                        Saat mencapai ketinggian yang tinggi, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul dan saling menempel. Mereka membentuk gumpalan-gumpalan putih yang lembut seperti kapas.
+                        <br><br>
+                        "Ini namanya kondensasi!" Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi awan yang besar dan indah. Awan itu melayang mengikuti arah angin, menari-nari di langit biru.
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter5">
+                    <h2 class="chapter-title">🌧️ Presipitasi - Hujan Turun</h2>
+                    <div class="story-text">
+                        Awan terus mengumpulkan lebih banyak tetes air. Dito merasa tubuhnya semakin berat dan tidak bisa lagi menahan diri di atas.
+                        <br><br>
+                        "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya mulai jatuh ke bawah seperti hujan yang riang. "Ini presipitasi atau hujan!" Dito berteriak senang sambil menikmati perjalanan turun yang menyenangkan.
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter6">
+                    <h2 class="chapter-title">🏞️ Kembali ke Bumi - Masalah Lingkungan</h2>
+                    <div class="story-text">
+                        Dito jatuh di sebuah taman, lalu mengalir menuju sungai. Namun pemandangan yang ia lihat membuatnya sedih. Air sungai kotor dan banyak sampah plastik yang mengapung di mana-mana. Sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat.
+                        <br><br>
+                        Dito berpikir kritis: "Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya? Air yang menguap akan kotor dan udara bisa jadi tidak sehat untuk semua makhluk hidup."
+                    </div>
+                </div>
+
+                <div class="chapter" id="chapter7">
+                    <h2 class="chapter-title">🌱 Terbangun dengan Tekad Baru</h2>
+                    <div class="story-text">
+                        Dito terbangun dari mimpinya yang menakjubkan. Ia menatap tetesan air hujan di jendela kamarnya dengan pemahaman yang baru. Ia kini mengerti bahwa siklus air adalah perjalangan yang luar biasa, tetapi juga sangat rentan terhadap kerusakan.
+                        <br><br>
+                        Dengan semangat, Dito mengambil sebuah kantong besar dan mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. "Siklus air tidak akan berjalan baik jika kita tidak peduli lingkungan," kata Dito dengan penuh tekad. "Kita harus menjaga air tetap bersih agar bumi kita tetap sehat dan indah!"
+                    </div>
+                </div>
+
+                <div class="navigation">
+                    <button class="nav-button" id="prevBtn" onclick="previousChapter()">⬅️ Sebelumnya</button>
+                    <button class="nav-button" id="nextBtn" onclick="nextChapter()">Selanjutnya ➡️</button>
+                </div>
+            </div>
+
+            <div class="interactive-panel">
+                <div class="panel-section">
+                    <h3 class="panel-title">🎤 Rekam Refleksi</h3>
+                    <div class="record-section">
+                        <button class="record-btn" id="recordBtn" onclick="toggleRecording()">
+                            <span id="recordIcon">🎤</span>
+                            <span id="recordText">Mulai Rekam Suara</span>
+                        </button>
+                        <div class="recording-status" id="recordingStatus"></div>
+                    </div>
+                    <div class="reflection-prompts">
+                        <h4>💭 Panduan Refleksi:</h4>
+                        <ul>
+                            <li>Apa yang kamu rasakan saat membaca cerita ini?</li>
+                            <li>Hal menarik apa yang kamu pelajari?</li>
+                            <li>Bagaimana cerita ini mengubah pemahamanmu?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="panel-title">📔 Jurnal Digital</h3>
+                    <textarea id="journalText" placeholder="Tuliskan pengalaman dan pemikiranmu tentang cerita ini..."></textarea>
+                    <button class="save-btn" onclick="saveJournal()">💾 Simpan Jurnal</button>
+                    <div class="saved-message" id="savedMessage">✅ Jurnal berhasil disimpan!</div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="panel-title">🔗 Hubungkan dengan Pengalaman</h3>
+                    <textarea id="personalConnection" placeholder="Ceritakan pengalamanmu dengan air, hujan, atau lingkungan..."></textarea>
+                    <button class="save-btn" onclick="savePersonalConnection()">💾 Simpan Pengalaman</button>
+                    <div class="saved-message" id="personalSaved">✅ Pengalaman tersimpan!</div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="panel-title">🧠 Hubungkan dengan Pengetahuan</h3>
+                    <textarea id="knowledgeConnection" placeholder="Hubungkan cerita ini dengan pelajaran sains, geografi, atau pengetahuan lain yang kamu tahu..."></textarea>
+                    <button class="save-btn" onclick="saveKnowledgeConnection()">💾 Simpan Pengetahuan</button>
+                    <div class="saved-message" id="knowledgeSaved">✅ Pengetahuan tersimpan!</div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="panel-title">📚 Bandingkan dengan Cerita Lain</h3>
+                    <textarea id="storyComparison" placeholder="Bandingkan cerita ini dengan buku, film, video, atau program TV lain yang pernah kamu lihat..."></textarea>
+                    <button class="save-btn" onclick="saveStoryComparison()">💾 Simpan Perbandingan</button>
+                    <div class="saved-message" id="comparisonSaved">✅ Perbandingan tersimpan!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChapter = 1;
+        const totalChapters = 7;
+        let isRecording = false;
+        let mediaRecorder;
+        let recordedChunks = [];
+
+        // Data storage (menggunakan variabel JavaScript)
+        let studentData = {
+            journal: '',
+            personalConnection: '',
+            knowledgeConnection: '',
+            storyComparison: '',
+            recordings: []
+        };
+
+        function updateProgress() {
+            const progress = (currentChapter / totalChapters) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateChapterIndicator() {
+            document.getElementById('chapterIndicator').textContent = `Bab ${currentChapter} dari ${totalChapters}`;
+        }
+
+        function showChapter(chapterNum) {
+            // Hide all chapters
+            const chapters = document.querySelectorAll('.chapter');
+            chapters.forEach(chapter => chapter.classList.remove('active'));
+            
+            // Show current chapter
+            document.getElementById(`chapter${chapterNum}`).classList.add('active');
+            
+            // Update navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = chapterNum === 1;
+            nextBtn.disabled = chapterNum === totalChapters;
+            
+            updateProgress();
+            updateChapterIndicator();
+        }
+
+        function nextChapter() {
+            if (currentChapter < totalChapters) {
+                currentChapter++;
+                showChapter(currentChapter);
+            }
+        }
+
+        function previousChapter() {
+            if (currentChapter > 1) {
+                currentChapter--;
+                showChapter(currentChapter);
+            }
+        }
+
+        function toggleRecording() {
+            const recordBtn = document.getElementById('recordBtn');
+            const recordIcon = document.getElementById('recordIcon');
+            const recordText = document.getElementById('recordText');
+            const recordingStatus = document.getElementById('recordingStatus');
+
+            if (!isRecording) {
+                startRecording();
+                recordBtn.classList.add('recording');
+                recordIcon.textContent = '⏹️';
+                recordText.textContent = 'Stop Rekaman';
+                recordingStatus.textContent = '🔴 Sedang merekam...';
+                isRecording = true;
+            } else {
+                stopRecording();
+                recordBtn.classList.remove('recording');
+                recordIcon.textContent = '🎤';
+                recordText.textContent = 'Mulai Rekam Suara';
+                recordingStatus.textContent = '✅ Rekaman selesai!';
+                isRecording = false;
+            }
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                recordedChunks = [];
+
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function() {
+                    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                    studentData.recordings.push({
+                        timestamp: new Date().toISOString(),
+                        chapter: currentChapter,
+                        audio: URL.createObjectURL(blob)
+                    });
+                };
+
+                mediaRecorder.start();
+            } catch (error) {
+                alert('Tidak dapat mengakses mikrofon. Pastikan browser memiliki izin untuk menggunakan mikrofon.');
+                console.error('Error accessing microphone:', error);
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        function saveJournal() {
+            const journalText = document.getElementById('journalText').value;
+            if (journalText.trim()) {
+                studentData.journal = journalText;
+                showSavedMessage('savedMessage');
+                console.log('Jurnal disimpan:', studentData.journal);
+            } else {
+                alert('Mohon isi jurnal terlebih dahulu!');
+            }
+        }
+
+        function savePersonalConnection() {
+            const connectionText = document.getElementById('personalConnection').value;
+            if (connectionText.trim()) {
+                studentData.personalConnection = connectionText;
+                showSavedMessage('personalSaved');
+                console.log('Pengalaman pribadi disimpan:', studentData.personalConnection);
+            } else {
+                alert('Mohon isi pengalaman pribadi terlebih dahulu!');
+            }
+        }
+
+        function saveKnowledgeConnection() {
+            const knowledgeText = document.getElementById('knowledgeConnection').value;
+            if (knowledgeText.trim()) {
+                studentData.knowledgeConnection = knowledgeText;
+                showSavedMessage('knowledgeSaved');
+                console.log('Hubungan pengetahuan disimpan:', studentData.knowledgeConnection);
+            } else {
+                alert('Mohon isi hubungan pengetahuan terlebih dahulu!');
+            }
+        }
+
+        function saveStoryComparison() {
+            const comparisonText = document.getElementById('storyComparison').value;
+            if (comparisonText.trim()) {
+                studentData.storyComparison = comparisonText;
+                showSavedMessage('comparisonSaved');
+                console.log('Perbandingan cerita disimpan:', studentData.storyComparison);
+            } else {
+                alert('Mohon isi perbandingan cerita terlebih dahulu!');
+            }
+        }
+
+        function showSavedMessage(messageId) {
+            const message = document.getElementById(messageId);
+            message.style.display = 'block';
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize the story
+        document.addEventListener('DOMContentLoaded', function() {
+            showChapter(1);
+            updateProgress();
+        });
+
+        // Auto-save functionality (simpan ke memori setiap kali user mengetik)
+        document.getElementById('journalText').addEventListener('input', function() {
+            studentData.journal = this.value;
+        });
+
+        document.getElementById('personalConnection').addEventListener('input', function() {
+            studentData.personalConnection = this.value;
+        });
+
+        document.getElementById('knowledgeConnection').addEventListener('input', function() {
+            studentData.knowledgeConnection = this.value;
+        });
+
+        document.getElementById('storyComparison').addEventListener('input', function() {
+            studentData.storyComparison = this.value;
+        });
+
+        // Fungsi untuk guru melihat data siswa (bisa dipanggil dari console)
+        function getStudentData() {
+            console.log('Data Siswa:', studentData);
+            return studentData;
+        }
+
+        // Export data siswa (guru bisa download)
+        function exportStudentData() {
+            const dataStr = JSON.stringify(studentData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'data_siswa_petualangan_tetes_air.json';
+            link.click();
+        }
+    </script>
+</body>
+</html>
