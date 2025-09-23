@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air di Langit Biru</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #E0F6FF 50%, #98FB98 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2E86C1;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .story-content {
+            font-size: 1.1em;
+            color: #333;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .highlighted-word {
+            background: linear-gradient(120deg, #FFD700 0%, #FFA500 100%);
+            padding: 2px 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            color: #2E86C1;
+        }
+
+        .highlighted-word:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 400px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .popup-image {
+            width: 200px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            background: linear-gradient(45deg, #87CEEB, #98FB98);
+        }
+
+        .popup h3 {
+            color: #2E86C1;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .popup p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: #2E86C1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #1B4F72;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .animation-area {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .rain-drop {
+            position: absolute;
+            background: #4A90E2;
+            width: 3px;
+            height: 15px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: fall 2s linear infinite;
+        }
+
+        .cloud {
+            position: absolute;
+            background: #fff;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .sun-ray {
+            position: absolute;
+            background: #FFD700;
+            width: 2px;
+            height: 50px;
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes shine {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .paragraph {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border-left: 5px solid #2E86C1;
+        }
+    </style>
+</head>
+<body>
+    <div class="animation-area" id="animationArea"></div>
+    
+    <div class="container">
+        <h1>🌧️ Petualangan Tetes Air di Langit Biru 🌤️</h1>
+        
+        <div class="story-content">
+            <div class="paragraph">
+                Di sebuah <span class="highlighted-word" data-word="kota">kota</span> yang ramai, hiduplah seorang anak laki-laki bernama <span class="highlighted-word" data-word="dito">Dito</span>. Ia sangat suka membaca dan bertanya tentang banyak hal. Suatu hari, guru sainsnya menjelaskan tentang <span class="highlighted-word" data-word="siklus-air">siklus air</span>. Dito bingung. Bagaimana <span class="highlighted-word" data-word="air">air</span> bisa naik ke langit, lalu kembali lagi ke bumi sebagai <span class="highlighted-word" data-word="hujan">hujan</span>?
+            </div>
+
+            <div class="paragraph">
+                "Aku ingin melihat sendiri!" gumam Dito. Malam harinya, ia bermimpi. Ia merasa tubuhnya mengecil dan berubah menjadi setetes air di sebuah <span class="highlighted-word" data-word="danau">danau</span>. Di sampingnya, ada ribuan tetes air lain yang juga sedang berpetualang.
+            </div>
+
+            <div class="paragraph">
+                <span class="highlighted-word" data-word="matahari">Matahari</span> mulai bersinar. Panasnya terasa hangat. Dito merasakan tubuhnya semakin ringan dan melayang ke atas. "Wah, kita <span class="highlighted-word" data-word="menguap">menguap</span>!" seru Dito. Ia melihat tetes air di sekitarnya juga ikut naik. Mereka bergerak semakin tinggi, melewati gedung-gedung dan pepohonan.
+            </div>
+
+            <div class="paragraph">
+                Saat di atas, udara menjadi sangat dingin. Dito dan tetes air lainnya mulai berkumpul. Mereka saling menempel, membentuk gumpalan-gumpalan putih yang lembut. "Ini namanya <span class="highlighted-word" data-word="kondensasi">kondensasi</span>!" Dito teringat pelajaran gurunya. Gumpalan-gumpalan itu semakin banyak dan berubah menjadi <span class="highlighted-word" data-word="awan">awan</span> yang besar.
+            </div>
+
+            <div class="paragraph">
+                Awan itu terus melayang, mengikuti <span class="highlighted-word" data-word="angin">angin</span>. Lalu, Dito merasa tubuhnya semakin berat. Ia tidak bisa lagi menahan diri. "Kita akan jatuh!" pikir Dito. Benar saja, ia dan teman-teman tetes airnya jatuh ke bawah. "Ini <span class="highlighted-word" data-word="presipitasi">presipitasi</span> atau hujan!" Dito berteriak senang. Ia jatuh di sebuah taman, lalu mengalir ke <span class="highlighted-word" data-word="sungai">sungai</span>.
+            </div>
+
+            <div class="paragraph">
+                Di dalam sungai, Dito melihat pemandangan yang menyedihkan. Air sungai kotor dan banyak <span class="highlighted-word" data-word="sampah">sampah</span> plastik yang mengapung. Ia melihat sampah-sampah itu menyumbat aliran air, membuat air sungai meluap di beberapa tempat. Dito berpikir kritis. Jika sungai kotor dan tersumbat, apa yang akan terjadi pada siklus air berikutnya? Air yang menguap akan kotor dan udara bisa jadi tidak sehat.
+            </div>
+
+            <div class="paragraph">
+                Dito terbangun. Ia menatap tetesan air hujan di jendela kamarnya. Ia kini mengerti. Siklus air adalah perjalanan yang luar biasa, tetapi juga rentan. Setiap tetes air yang jatuh ke bumi akan kembali menguap. Jika kita membuang sampah sembarangan dan membuat sungai kotor, kita merusak seluruh siklus.
+            </div>
+
+            <div class="paragraph">
+                Dito lalu mengambil sebuah kantong plastik besar. Ia mengajak teman-temannya untuk membersihkan sampah di taman dekat sungai. "Siklus air tidak akan berjalan baik jika kita tidak peduli <span class="highlighted-word" data-word="lingkungan">lingkungan</span>," kata Dito. "Kita harus menjaga air tetap bersih agar bumi kita tetap sehat."
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="popup" id="popup">
+        <div class="popup-image" id="popupImage"></div>
+        <h3 id="popupTitle"></h3>
+        <p id="popupDescription"></p>
+        <button class="close-btn" onclick="closePopup()">Tutup</button>
+    </div>
+
+    <script>
+        const wordData = {
+            'kota': {
+                emoji: '🏙️',
+                title: 'Kota',
+                description: 'Tempat tinggal Dito yang ramai dengan gedung-gedung tinggi dan banyak aktivitas manusia.',
+                sound: 'city'
+            },
+            'dito': {
+                emoji: '👦',
+                title: 'Dito',
+                description: 'Anak laki-laki yang suka membaca dan bertanya. Ia penasaran dengan siklus air.',
+                sound: 'boy'
+            },
+            'siklus-air': {
+                emoji: '🔄💧',
+                title: 'Siklus Air',
+                description: 'Perjalanan air dari bumi ke langit, lalu kembali lagi ke bumi. Proses yang tak pernah berhenti!',
+                sound: 'cycle'
+            },
+            'air': {
+                emoji: '💧',
+                title: 'Air',
+                description: 'Cairan bening yang sangat penting bagi kehidupan. Air bisa berubah bentuk menjadi uap atau es.',
+                sound: 'water'
+            },
+            'hujan': {
+                emoji: '🌧️',
+                title: 'Hujan',
+                description: 'Tetes-tetes air yang jatuh dari awan ke bumi. Hujan memberi kehidupan pada tumbuhan.',
+                sound: 'rain'
+            },
+            'danau': {
+                emoji: '🏞️',
+                title: 'Danau',
+                description: 'Kumpulan air yang luas di daratan. Tempat awal perjalanan tetes air dalam mimpi Dito.',
+                sound: 'lake'
+            },
+            'matahari': {
+                emoji: '☀️',
+                title: 'Matahari',
+                description: 'Bintang yang memberikan panas dan cahaya. Panasnya membuat air menguap ke langit.',
+                sound: 'sun'
+            },
+            'menguap': {
+                emoji: '💨',
+                title: 'Penguapan (Evaporasi)',
+                description: 'Proses air berubah menjadi uap karena panas matahari. Air naik ke langit sebagai uap.',
+                sound: 'evaporation'
+            },
+            'kondensasi': {
+                emoji: '☁️',
+                title: 'Kondensasi',
+                description: 'Proses uap air berubah kembali menjadi tetes air kecil saat udara dingin.',
+                sound: 'condensation'
+            },
+            'awan': {
+                emoji: '☁️',
+                title: 'Awan',
+                description: 'Kumpulan tetes air kecil atau kristal es yang melayang di langit.',
+                sound: 'cloud'
+            },
+            'angin': {
+                emoji: '💨',
+                title: 'Angin',
+                description: 'Udara yang bergerak. Angin membantu awan berpindah dari satu tempat ke tempat lain.',
+                sound: 'wind'
+            },
+            'presipitasi': {
+                emoji: '🌧️',
+                title: 'Presipitasi',
+                description: 'Proses jatuhnya air dari awan ke bumi dalam bentuk hujan, salju, atau hujan es.',
+                sound: 'precipitation'
+            },
+            'sungai': {
+                emoji: '🏊',
+                title: 'Sungai',
+                description: 'Aliran air yang mengalir dari gunung ke laut. Sungai mengangkut air kembali ke laut.',
+                sound: 'river'
+            },
+            'sampah': {
+                emoji: '🗑️',
+                title: 'Sampah',
+                description: 'Barang-barang yang tidak terpakai dan mencemari lingkungan. Sampah bisa merusak siklus air.',
+                sound: 'trash'
+            },
+            'lingkungan': {
+                emoji: '🌍',
+                title: 'Lingkungan',
+                description: 'Tempat kita hidup termasuk udara, air, tanah, dan makhluk hidup lainnya.',
+                sound: 'environment'
+            }
+        };
+
+        function createAnimation(type) {
+            const animationArea = document.getElementById('animationArea');
+            
+            if (type === 'rain') {
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const drop = document.createElement('div');
+                        drop.className = 'rain-drop';
+                        drop.style.left = Math.random() * window.innerWidth + 'px';
+                        drop.style.animationDuration = (Math.random() * 1 + 1) + 's';
+                        animationArea.appendChild(drop);
+                        
+                        setTimeout(() => {
+                            if (drop.parentNode) {
+                                drop.parentNode.removeChild(drop);
+                            }
+                        }, 2000);
+                    }, i * 100);
+                }
+            } else if (type === 'cloud') {
+                for (let i = 0; i < 5; i++) {
+                    const cloud = document.createElement('div');
+                    cloud.className = 'cloud';
+                    cloud.style.width = (Math.random() * 100 + 80) + 'px';
+                    cloud.style.height = (Math.random() * 50 + 40) + 'px';
+                    cloud.style.left = Math.random() * window.innerWidth + 'px';
+                    cloud.style.top = Math.random() * 200 + 'px';
+                    animationArea.appendChild(cloud);
+                    
+                    setTimeout(() => {
+                        if (cloud.parentNode) {
+                            cloud.parentNode.removeChild(cloud);
+                        }
+                    }, 4000);
+                }
+            } else if (type === 'sun') {
+                for (let i = 0; i < 8; i++) {
+                    const ray = document.createElement('div');
+                    ray.className = 'sun-ray';
+                    ray.style.left = (window.innerWidth / 2) + 'px';
+                    ray.style.top = '50px';
+                    ray.style.transformOrigin = '50% 200px';
+                    ray.style.transform = `rotate(${i * 45}deg)`;
+                    animationArea.appendChild(ray);
+                    
+                    setTimeout(() => {
+                        if (ray.parentNode) {
+                            ray.parentNode.removeChild(ray);
+                        }
+                    }, 3000);
+                }
+            }
+        }
+
+        function playSound(soundType) {
+            // Simulasi suara dengan Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            
+            const frequencies = {
+                'rain': [400, 600, 800],
+                'water': [200, 400],
+                'wind': [150, 300, 450],
+                'city': [100, 200, 300, 400],
+                'sun': [800, 1000, 1200]
+            };
+            
+            const freq = frequencies[soundType] || [440];
+            
+            freq.forEach((f, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = f;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                }, index * 100);
+            });
+        }
+
+        function showPopup(word) {
+            const data = wordData[word];
+            if (!data) return;
+
+            document.getElementById('popupImage').textContent = data.emoji;
+            document.getElementById('popupTitle').textContent = data.title;
+            document.getElementById('popupDescription').textContent = data.description;
+            
+            document.getElementById('overlay').classList.add('show');
+            document.getElementById('popup').classList.add('show');
+            
+            // Play sound
+            playSound(data.sound);
+            
+            // Create animation based on word
+            if (word === 'hujan' || word === 'presipitasi') {
+                createAnimation('rain');
+            } else if (word === 'awan' || word === 'kondensasi') {
+                createAnimation('cloud');
+            } else if (word === 'matahari' || word === 'menguap') {
+                createAnimation('sun');
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('popup').classList.remove('show');
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const highlightedWords = document.querySelectorAll('.highlighted-word');
+            
+            highlightedWords.forEach(word => {
+                word.addEventListener('click', function() {
+                    const wordKey = this.getAttribute('data-word');
+                    showPopup(wordKey);
+                });
+            });
+        });
+
+        // Close popup when clicking overlay
+        document.getElementById('overlay').addEventListener('click', closePopup);
+    </script>
+</body>
+</html>
