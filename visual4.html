@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Tetes Air di Langit Biru - Komik Interaktif</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(45deg, #4169E1, #00BFFF);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+        }
+
+        .comic-section {
+            padding: 30px;
+            display: none;
+        }
+
+        .comic-section.active {
+            display: block;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .comic-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comic-panel {
+            background: white;
+            border: 4px solid #333;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .comic-panel:hover {
+            transform: scale(1.02);
+        }
+
+        .panel-illustration {
+            width: 100%;
+            height: 200px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .panel-1 { background: linear-gradient(135deg, #FFE4B5, #F0E68C); }
+        .panel-2 { background: linear-gradient(135deg, #87CEEB, #ADD8E6); }
+        .panel-3 { background: linear-gradient(135deg, #FFB6C1, #FFA07A); }
+        .panel-4 { background: linear-gradient(135deg, #98FB98, #90EE90); }
+        .panel-5 { background: linear-gradient(135deg, #D3D3D3, #A9A9A9); }
+        .panel-6 { background: linear-gradient(135deg, #DDA0DD, #DA70D6); }
+        .panel-7 { background: linear-gradient(135deg, #20B2AA, #48D1CC); }
+        .panel-8 { background: linear-gradient(135deg, #8B4513, #A0522D); }
+        .panel-9 { background: linear-gradient(135deg, #32CD32, #7CFC00); }
+
+        .speech-bubble {
+            background: white;
+            border: 3px solid #333;
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 10px;
+            position: relative;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 30px;
+            border: 15px solid transparent;
+            border-top: 15px solid #333;
+        }
+
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -9px;
+            left: 33px;
+            border: 12px solid transparent;
+            border-top: 12px solid white;
+        }
+
+        .thought-bubble {
+            background: #F0F8FF;
+            border: 3px dashed #4169E1;
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        .character {
+            position: absolute;
+            font-size: 3em;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        .dito {
+            bottom: 20px;
+            left: 20px;
+        }
+
+        .water-drop {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .sun {
+            top: 20px;
+            right: 20px;
+            animation: rotate 4s infinite linear;
+        }
+
+        .cloud {
+            top: 30px;
+            left: 30%;
+            animation: drift 6s infinite ease-in-out;
+        }
+
+        .tree {
+            bottom: 20px;
+            right: 20px;
+        }
+
+        .trash {
+            bottom: 30px;
+            left: 60%;
+            animation: shake 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-15px); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(20px); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0px); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        .panel-text {
+            font-size: 1em;
+            color: #333;
+            line-height: 1.4;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .navigation {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-indicator {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .progress-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ddd;
+            margin: 0 5px;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: #4CAF50;
+            transform: scale(1.3);
+        }
+
+        .story-summary {
+            background: linear-gradient(135deg, #FFE4E1, #FFF0F5);
+            border: 3px solid #FF69B4;
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .interactive-elements {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .element-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .element-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .cycle-explanation {
+            background: white;
+            border: 3px solid #4169E1;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .cycle-explanation.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .floating-drop {
+            position: absolute;
+            font-size: 1.5em;
+            animation: floatUp 4s infinite ease-in-out;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+        .environmental-warning {
+            background: #ffebee;
+            border-left: 5px solid #f44336;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌧️ Petualangan Tetes Air di Langit Biru 🌤️</h1>
+            <p>Komik Interaktif tentang Siklus Air</p>
+            <div class="progress-indicator">
+                <div class="progress-dot active" data-section="1"></div>
+                <div class="progress-dot" data-section="2"></div>
+                <div class="progress-dot" data-section="3"></div>
+                <div class="progress-dot" data-section="4"></div>
+                <div class="progress-dot" data-section="5"></div>
+            </div>
+        </div>
+
+        <!-- Bagian 1: Dito Belajar Siklus Air -->
+        <div class="comic-section active" id="section1">
+            <h2 class="section-title">📚 Dito si Anak Penasaran</h2>
+            <div class="comic-strip">
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-1">
+                        <div class="character dito">👦</div>
+                        <div class="character" style="top: 30px; right: 30px;">📚</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Aku suka membaca dan bertanya tentang banyak hal!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-2">
+                        <div class="character" style="top: 20px; left: 20px;">👨‍🏫</div>
+                        <div class="character" style="bottom: 20px; right: 20px;">💧☁️🌧️</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Guru menjelaskan tentang siklus air. Tapi aku bingung!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-3">
+                        <div class="character dito">👦</div>
+                        <div class="character" style="top: 20px; left: 50%; font-size: 2em;">❓❓❓</div>
+                    </div>
+                    <div class="thought-bubble">
+                        <div class="panel-text">"Bagaimana air bisa naik ke langit? Aku ingin melihat sendiri!"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-summary">
+                <h3>🎯 Ringkasan Scene</h3>
+                <p>Dito adalah anak yang sangat penasaran. Ketika guru menjelaskan siklus air, ia menjadi bingung dan ingin memahami prosesnya secara langsung.</p>
+            </div>
+        </div>
+
+        <!-- Bagian 2: Mimpi Menjadi Tetes Air -->
+        <div class="comic-section" id="section2">
+            <h2 class="section-title">😴 Mimpi Ajaib Dito</h2>
+            <div class="comic-strip">
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-4">
+                        <div class="character" style="top: 30px; right: 30px;">🌙⭐</div>
+                        <div class="character" style="bottom: 20px; left: 20px;">😴</div>
+                        <div class="floating-elements">
+                            <div class="floating-drop" style="left: 20%; animation-delay: 0s;">💧</div>
+                            <div class="floating-drop" style="left: 60%; animation-delay: 1s;">💧</div>
+                            <div class="floating-drop" style="left: 80%; animation-delay: 2s;">💧</div>
+                        </div>
+                    </div>
+                    <div class="thought-bubble">
+                        <div class="panel-text">"Tubuhku mengecil... Aku menjadi setetes air di danau!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-2">
+                        <div class="character sun">☀️</div>
+                        <div class="character water-drop">💧</div>
+                        <div class="character" style="bottom: 10px; left: 10%; font-size: 1.5em;">💧💧💧</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Matahari bersinar! Aku merasakan tubuhku ringan dan melayang!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-5">
+                        <div class="character tree">🌳</div>
+                        <div class="character" style="top: 30%; left: 30%; font-size: 2em;">🏢</div>
+                        <div class="character" style="top: 10%; left: 60%; font-size: 1.5em;">💧⬆️</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Wah, kita menguap! Melewati gedung dan pohon!"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-elements">
+                <button class="element-btn" onclick="showCycleExplanation('evaporation')">🔥 Evaporasi</button>
+                <button class="element-btn" onclick="showCycleExplanation('heat')">☀️ Panas Matahari</button>
+            </div>
+
+            <div class="cycle-explanation" id="evaporation-explanation">
+                <h3>🔥 Evaporasi (Penguapan)</h3>
+                <p>Ketika matahari memanaskan air di danau, sungai, atau laut, air berubah menjadi uap dan naik ke udara. Ini disebut evaporasi!</p>
+            </div>
+
+            <div class="cycle-explanation" id="heat-explanation">
+                <h3>☀️ Peran Panas Matahari</h3>
+                <p>Panas matahari memberikan energi yang dibutuhkan air untuk berubah dari cairan menjadi gas (uap air). Tanpa matahari, siklus air tidak akan berjalan!</p>
+            </div>
+        </div>
+
+        <!-- Bagian 3: Kondensasi dan Pembentukan Awan -->
+        <div class="comic-section" id="section3">
+            <h2 class="section-title">☁️ Lahirnya Awan</h2>
+            <div class="comic-strip">
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-5">
+                        <div class="character" style="top: 20%; left: 20%; font-size: 1.8em;">🥶</div>
+                        <div class="character" style="top: 40%; right: 30%; font-size: 2em;">💧❄️</div>
+                        <div class="character" style="bottom: 30%; left: 50%; font-size: 1.5em;">💧💧</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Brrr... Di atas dingin sekali! Kami mulai berkumpul!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-6">
+                        <div class="character cloud">☁️</div>
+                        <div class="character" style="top: 50%; left: 20%; font-size: 1.5em;">💧➕💧</div>
+                        <div class="character" style="bottom: 30%; right: 20%; font-size: 1.5em;">💧💧💧</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Ini kondensasi! Kami menempel dan jadi awan putih!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-2">
+                        <div class="character" style="top: 20%; left: 30%; font-size: 3em;">☁️</div>
+                        <div class="character" style="top: 40%; right: 20%; font-size: 2em;">🌬️</div>
+                        <div class="character" style="bottom: 20%; left: 10%; font-size: 2em;">☁️💨</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Awan besar terbentuk dan bergerak mengikuti angin!"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="interactive-elements">
+                <button class="element-btn" onclick="showCycleExplanation('condensation')">❄️ Kondensasi</button>
+                <button class="element-btn" onclick="showCycleExplanation('clouds')">☁️ Pembentukan Awan</button>
+            </div>
+
+            <div class="cycle-explanation" id="condensation-explanation">
+                <h3>❄️ Kondensasi</h3>
+                <p>Di udara yang dingin, uap air berubah kembali menjadi tetesan air kecil. Tetesan-tetesan ini berkumpul membentuk awan!</p>
+            </div>
+
+            <div class="cycle-explanation" id="clouds-explanation">
+                <h3>☁️ Bagaimana Awan Terbentuk?</h3>
+                <p>Jutaan tetesan air kecil berkumpul di udara dingin, membentuk awan. Awan bergerak mengikuti arah angin di atmosfer.</p>
+            </div>
+        </div>
+
+        <!-- Bagian 4: Presipitasi dan Pencemaran -->
+        <div class="comic-section" id="section4">
+            <h2 class="section-title">🌧️ Hujan dan Masalah Lingkungan</h2>
+            <div class="comic-strip">
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-2">
+                        <div class="character" style="top: 10%; left: 40%; font-size: 3em;">☁️</div>
+                        <div class="character" style="top: 40%; left: 50%; font-size: 2em;">💧⬇️</div>
+                        <div class="character" style="bottom: 20%; right: 30%; font-size: 1.8em;">🌧️</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Tubuh kami semakin berat! Kita akan jatuh sebagai hujan!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-4">
+                        <div class="character" style="top: 20%; left: 30%; font-size: 2em;">🌧️</div>
+                        <div class="character" style="bottom: 20%; left: 20%; font-size: 2em;">🌳</div>
+                        <div class="character" style="bottom: 20%; right: 20%; font-size: 2em;">🌸</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Aku jatuh di taman yang indah dan mengalir ke sungai!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-8">
+                        <div class="character" style="top: 30%; left: 20%; font-size: 2em;">🏭</div>
+                        <div class="character trash">🗑️</div>
+                        <div class="character" style="bottom: 10%; right: 10%; font-size: 1.8em;">🚮</div>
+                        <div class="character" style="top: 50%; left: 60%; font-size: 1.5em;">💧😢</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Oh tidak! Sungai penuh sampah dan air jadi kotor!"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="environmental-warning">
+                <h3>⚠️ Peringatan Lingkungan</h3>
+                <p>Ketika air tercemar, seluruh siklus air ikut tercemar. Air kotor yang menguap akan mencemari udara dan hujan selanjutnya!</p>
+            </div>
+
+            <div class="interactive-elements">
+                <button class="element-btn" onclick="showCycleExplanation('precipitation')">🌧️ Presipitasi</button>
+                <button class="element-btn" onclick="showCycleExplanation('pollution')">🚮 Pencemaran Air</button>
+            </div>
+
+            <div class="cycle-explanation" id="precipitation-explanation">
+                <h3>🌧️ Presipitasi</h3>
+                <p>Ketika tetesan air di awan menjadi terlalu berat, mereka jatuh sebagai hujan, salju, atau hujan es. Ini disebut presipitasi!</p>
+            </div>
+
+            <div class="cycle-explanation" id="pollution-explanation">
+                <h3>🚮 Dampak Pencemaran Air</h3>
+                <p>Sampah dan limbah di sungai membuat air kotor. Air kotor ini akan menguap dan mencemari udara, merusak siklus air alami.</p>
+            </div>
+        </div>
+
+        <!-- Bagian 5: Kesadaran dan Aksi -->
+        <div class="comic-section" id="section5">
+            <h2 class="section-title">🌍 Dito Beraksi untuk Bumi</h2>
+            <div class="comic-strip">
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-1">
+                        <div class="character" style="top: 30%; left: 30%; font-size: 2em;">😯</div>
+                        <div class="character" style="bottom: 20%; right: 20%; font-size: 2em;">🪟🌧️</div>
+                        <div class="character" style="top: 10%; right: 10%; font-size: 1.5em;">💭</div>
+                    </div>
+                    <div class="thought-bubble">
+                        <div class="panel-text">"Aku terbangun! Sekarang aku mengerti siklus air!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-9">
+                        <div class="character" style="top: 20%; left: 20%; font-size: 2em;">👦</div>
+                        <div class="character" style="top: 30%; right: 20%; font-size: 2em;">🗑️</div>
+                        <div class="character" style="bottom: 20%; left: 50%; font-size: 2em;">👧👦</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Ayo teman-teman! Kita bersihkan sampah di taman!"</div>
+                    </div>
+                </div>
+
+                <div class="comic-panel">
+                    <div class="panel-illustration panel-4">
+                        <div class="character" style="top: 20%; left: 30%; font-size: 2em;">🌱</div>
+                        <div class="character" style="bottom: 20%; left: 20%; font-size: 2em;">💧✨</div>
+                        <div class="character" style="bottom: 20%; right: 20%; font-size: 2em;">🌍💚</div>
+                    </div>
+                    <div class="speech-bubble">
+                        <div class="panel-text">"Kita harus jaga air bersih agar bumi tetap sehat!"</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="story-summary">
+                <h3>📝 Kesimpulan Cerita</h3>
+                <p>Dito belajar bahwa siklus air adalah proses yang sangat penting dan rentan. Setiap orang harus berperan menjaga kebersihan air dan lingkungan agar siklus air tetap sehat.</p>
+            </div>
+
+            <div class="interactive-elements">
+                <button class="element-btn" onclick="showCycleExplanation('cycle-complete')">🔄 Siklus Lengkap</button>
+                <button class="element-btn" onclick="showCycleExplanation('our-role')">🙋‍♂️ Peran Kita</button>
+            </div>
+
+            <div class="cycle-explanation" id="cycle-complete-explanation">
+                <h3>🔄 Siklus Air Lengkap</h3>
+                <p><strong>1. Evaporasi:</strong> Matahari menguapkan air<br>
+                <strong>2. Kondensasi:</strong> Uap membentuk awan<br>
+                <strong>3. Presipitasi:</strong> Awan jatuh sebagai hujan<br>
+                <strong>4. Koleksi:</strong> Air berkumpul kembali di bumi</p>
+            </div>
+
+            <div class="cycle-explanation" id="our-role-explanation">
+                <h3>🙋‍♂️ Apa yang Bisa Kita Lakukan?</h3>
+                <p>• Tidak buang sampah ke sungai<br>
+                • Hemat penggunaan air<br>
+                • Gunakan produk ramah lingkungan<br>
+                • Ajak teman peduli lingkungan</p>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="previousSection()" disabled>⬅️ Sebelumnya</button>
+            <button class="nav-btn" id="nextBtn" onclick="nextSection()">Selanjutnya ➡️</button>
+            <button class="nav-btn" onclick="resetComic()" style="background: linear-gradient(45deg, #FF6B6B, #FF8E53);">🔄 Mulai Ulang</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 5;
+
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentSection === 1;
+            nextBtn.disabled = currentSection === totalSections;
+            
+            if (currentSection === totalSections) {
+                nextBtn.textContent = '🎉 Selesai!';
+            } else {
+                nextBtn.textContent = 'Selanjutnya ➡️';
+            }
+            
+            // Update progress dots
+            document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+                if (index + 1 <= currentSection) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function nextSection() {
+            if (currentSection < totalSections) {
+                document.getElementById(`section${currentSection}`).classList.remove('active');
+                currentSection++;
+                document.getElementById(`section${currentSection}`).classList.add('active');
+                updateNavigation();
+                
+                // Scroll to top of new section
+                document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 1) {
+                document.getElementById(`section${currentSection}`).classList.remove('active');
+                currentSection--;
+                document.getElementById(`section${currentSection}`).classList.add('active');
+                updateNavigation();
+                
+                // Scroll to top of new section
+                document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function showCycleExplanation(type) {
+            // Hide all explanations first
+            document.querySelectorAll('.cycle-explanation').forEach(explanation => {
+                explanation.classList.remove('show');
+            });
+            
+            // Show the selected explanation
+            const explanation = document.getElementById(`${type}-explanation`);
+            if (explanation) {
+                explanation.classList.add('show');
+                explanation.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function resetComic() {
+            // Hide all sections
+            document.querySelectorAll('.comic-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show first section
+            document.getElementById('section1').classList.add('active');
+            currentSection = 1;
+            updateNavigation();
+            
+            // Hide all explanations
+            document.querySelectorAll('.cycle-explanation').forEach(explanation => {
+                explanation.classList.remove('show');
+            });
+            
+            // Scroll to top
+            document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft' && currentSection > 1) {
+                previousSection();
+            } else if (event.key === 'ArrowRight' && currentSection < totalSections) {
+                nextSection();
+            }
+        });
+
+        // Add click navigation for progress dots
+        document.querySelectorAll('.progress-dot').forEach((dot, index) => {
+            dot.addEventListener('click', function() {
+                const targetSection = index + 1;
+                if (targetSection !== currentSection) {
+                    document.getElementById(`section${currentSection}`).classList.remove('active');
+                    currentSection = targetSection;
+                    document.getElementById(`section${currentSection}`).classList.add('active');
+                    updateNavigation();
+                    document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Initialize the navigation
+        updateNavigation();
+
+        // Add some interactive animations on load
+        window.addEventListener('load', function() {
+            // Add staggered animation to comic panels
+            document.querySelectorAll('.comic-panel').forEach((panel, index) => {
+                panel.style.animationDelay = `${index * 0.2}s`;
+            });
+        });
+
+        // Add hover effects to interactive elements
+        document.querySelectorAll('.element-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1) rotate(2deg)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+
+        // Add click effect to comic panels
+        document.querySelectorAll('.comic-panel').forEach(panel => {
+            panel.addEventListener('click', function() {
+                this.style.animation = 'bounce 0.6s ease-in-out';
+                setTimeout(() => {
+                    this.style.animation = '';
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html>
